@@ -1,0 +1,36 @@
+{
+  "name": "slif-next",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "check": "tsc --noEmit",
+    "prisma:generate": "prisma generate",
+    "db:push": "node --import tsx scripts/db-push.ts",
+    "db:seed": "node --import tsx scripts/seed.ts",
+    "media:check": "node --import tsx scripts/check-media.ts",
+    "backup:sqlite": "bash scripts/backup-sqlite.sh"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.908.0",
+    "@hookform/resolvers": "^5.2.2",
+    "@prisma/client": "^6.16.1",
+    "bcryptjs": "^3.0.2",
+    "next": "^15.5.2",
+    "next-auth": "^5.0.0-beta.29",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.62.0",
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "prisma": "^6.16.1",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,0 +1,226 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum MediaSource {
+  EXTERNAL
+  MINIO
+}
+
+model MediaAsset {
+  id        String      @id @default(cuid())
+  publicUrl String      @unique
+  objectKey String?
+  bucket    String?
+  mimeType  String?
+  size      Int?
+  altText   String?
+  source    MediaSource @default(EXTERNAL)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Sector {
+  id                    String                  @id @default(cuid())
+  slug                  String                  @unique
+  sortOrder             Int                     @default(0)
+  published             Boolean                 @default(true)
+  name                  String
+  tagline               String?
+  heroImageUrl          String?
+  imageUrl              String?
+  seoTitle              String?
+  seoDescription        String?
+  ctaTitle              String?
+  ctaDescription        String?
+  officerName           String?
+  officerTitle          String?
+  officerSpecialization String?
+  officerPhone          String?
+  officerEmail          String?
+  officerImageUrl       String?
+  consultationLink      String?
+  reportLink            String?
+  officerDescription    String?
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime                @updatedAt
+  overviewParagraphs    SectorOverviewParagraph[]
+  stats                 SectorStat[]
+  whyInvestItems        SectorWhyInvest[]
+  advantages            SectorAdvantage[]
+  projects              Project[]
+}
+
+model SectorOverviewParagraph {
+  id        String   @id @default(cuid())
+  sectorId   String
+  value      String
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  sector     Sector   @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@index([sectorId, sortOrder])
+}
+
+model SectorStat {
+  id        String   @id @default(cuid())
+  sectorId   String
+  label      String
+  value      String
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  sector     Sector   @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@index([sectorId, sortOrder])
+}
+
+model SectorWhyInvest {
+  id        String   @id @default(cuid())
+  sectorId   String
+  value      String
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  sector     Sector   @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@index([sectorId, sortOrder])
+}
+
+model SectorAdvantage {
+  id        String   @id @default(cuid())
+  sectorId   String
+  value      String
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  sector     Sector   @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@index([sectorId, sortOrder])
+}
+
+model Project {
+  id             String                 @id @default(cuid())
+  legacyId       String                 @unique
+  slug           String                 @unique
+  sectorId       String
+  sortOrder      Int                    @default(0)
+  published      Boolean                @default(true)
+  type           String?
+  title          String
+  subTitle       String?
+  description    String?
+  brochureUrl    String?
+  moreInfoUrl    String?
+  videoUrl       String?
+  heroVideoUrl   String?
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  sector         Sector                 @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+  media          ProjectMedia[]
+  stats          ProjectStat[]
+  highlights     ProjectHighlight[]
+  financialItems ProjectFinancialItem[]
+
+  @@index([sectorId, sortOrder])
+}
+
+model ProjectMedia {
+  id        String   @id @default(cuid())
+  projectId  String
+  url        String
+  altText    String?
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, sortOrder])
+}
+
+model ProjectStat {
+  id        String   @id @default(cuid())
+  projectId  String
+  label      String
+  value      String
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, sortOrder])
+}
+
+model ProjectHighlight {
+  id        String   @id @default(cuid())
+  projectId  String
+  value      String
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, sortOrder])
+}
+
+model ProjectFinancialItem {
+  id        String   @id @default(cuid())
+  projectId  String
+  value      String
+  sortOrder  Int     @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  project    Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, sortOrder])
+}
+
+model SpeakerSectionSettings {
+  id        String   @id
+  title     String
+  subtitle  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SpeakerSession {
+  id        String    @id @default(cuid())
+  name      String
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  speakers  Speaker[]
+}
+
+model Speaker {
+  id        String         @id @default(cuid())
+  sessionId  String
+  name      String
+  title     String?
+  company   String?
+  imageUrl  String?
+  alt       String?
+  sortOrder Int            @default(0)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  session   SpeakerSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, sortOrder])
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  active       Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

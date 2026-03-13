@@ -112,8 +112,11 @@ function initSite() {
    */
   const preloader = document.querySelector('#preloader');
   if (preloader) {
+    preloader.remove();
     window.addEventListener('load', () => {
-      preloader.remove();
+      if (preloader.isConnected) {
+        preloader.remove();
+      }
     });
   }
 

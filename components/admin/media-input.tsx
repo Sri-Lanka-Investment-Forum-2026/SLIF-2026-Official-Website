@@ -1,0 +1,88 @@
+"use client";
+
+import { useRef, useState } from "react";
+
+type MediaInputProps = {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  folder: string;
+  accept?: string;
+};
+
+export function MediaInput({ label, value, onChange, folder, accept }: MediaInputProps) {
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const upload = async (file: File) => {
+    const formData = new FormData();
+    formData.set("file", file);
+    formData.set("folder", folder);
+
+    setIsUploading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/admin/uploads", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = (await response.json()) as { url?: string; error?: string };
+
+      if (!response.ok || !data.url) {
+        throw new Error(data.error ?? "Upload failed.");
+      }
+
+      onChange(data.url);
+    } catch (uploadError) {
+      setError(uploadError instanceof Error ? uploadError.message : "Upload failed.");
+    } finally {
+      setIsUploading(false);
+      if (fileRef.current) {
+        fileRef.current.value = "";
+      }
+    }
+  };
+
+  return (
+    <div>
+      <label className="form-label">{label}</label>
+      <input
+        className="form-control"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="Paste an existing MinIO/public URL or upload a file"
+      />
+      <div className="d-flex flex-wrap align-items-center gap-2 mt-2">
+        <button
+          type="button"
+          className="btn btn-outline-secondary btn-sm"
+          onClick={() => fileRef.current?.click()}
+          disabled={isUploading}
+        >
+          {isUploading ? "Uploading..." : "Upload file"}
+        </button>
+        {value ? (
+          <a className="btn btn-link btn-sm p-0" href={value} target="_blank" rel="noreferrer">
+            Open asset
+          </a>
+        ) : null}
+      </div>
+      {error ? <div className="text-danger small mt-2">{error}</div> : null}
+      <input
+        ref={fileRef}
+        type="file"
+        accept={accept}
+        hidden
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          if (file) {
+            void upload(file);
+          }
+        }}
+      />
+    </div>
+  );
+}
