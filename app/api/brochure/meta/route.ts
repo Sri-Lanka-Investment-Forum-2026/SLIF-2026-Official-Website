@@ -9,6 +9,7 @@ import { fetchBrochureBuffer } from "@/lib/brochure";
 const execFileAsync = promisify(execFile);
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 function parsePageCount(pdfInfoOutput: string) {
   const match = pdfInfoOutput.match(/^Pages:\s+(\d+)/m);

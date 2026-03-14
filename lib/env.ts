@@ -1,3 +1,4 @@
+import { existsSync } from "node:fs";
 import path from "node:path";
 
 const requiredInProduction = (value: string | undefined, key: string) => {
@@ -8,10 +9,41 @@ const requiredInProduction = (value: string | undefined, key: string) => {
   return value;
 };
 
-const defaultDatabaseUrl = `file:${path.resolve(process.cwd(), "prisma", "dev.db")}`;
+const defaultDatabasePath = path.resolve(process.cwd(), "prisma", "dev.db");
+const defaultDatabaseUrl = `file:${defaultDatabasePath}`;
+
+const normalizeSqliteDatabaseUrl = (value: string | undefined) => {
+  const rawValue = value?.trim();
+
+  if (!rawValue) {
+    return defaultDatabaseUrl;
+  }
+
+  if (!rawValue.startsWith("file:")) {
+    return rawValue;
+  }
+
+  const databasePath = rawValue.slice("file:".length);
+
+  if (!databasePath) {
+    return defaultDatabaseUrl;
+  }
+
+  const resolvedCandidates = path.isAbsolute(databasePath)
+    ? [databasePath, path.resolve(process.cwd(), databasePath.replace(/^[/\\]+/, ""))]
+    : [path.resolve(process.cwd(), databasePath)];
+
+  const existingPath = resolvedCandidates.find((candidate) => existsSync(candidate));
+
+  if (existingPath) {
+    return `file:${existingPath}`;
+  }
+
+  return rawValue;
+};
 
 export const env = {
-  databaseUrl: process.env.DATABASE_URL ?? defaultDatabaseUrl,
+  databaseUrl: normalizeSqliteDatabaseUrl(process.env.DATABASE_URL),
   authSecret: requiredInProduction(process.env.AUTH_SECRET, "AUTH_SECRET") ?? "development-secret",
   mediaPublicBaseUrl:
     process.env.MEDIA_PUBLIC_BASE_URL ?? "https://media.srilankainvestmentforum.com",

@@ -21,7 +21,7 @@ function buildBrochurePageUrl(url: string, page: number) {
     width: "1600",
   });
 
-  return `/api/brochure/page?${params.toString()}`;
+  return `/api/brochure/render?${params.toString()}`;
 }
 
 function getFocusableElements(container: HTMLElement) {

@@ -23,6 +23,8 @@ export default async function EditSectorPage({ params }: EditSectorPageProps) {
       user={user}
       title={`Edit ${sector.name}`}
       description="Update public sector content and the linked CTA/officer information."
+      backHref="/admin/sectors"
+      backLabel="Back to sectors"
     >
       <SectorEditor initialValue={sector} />
     </AdminShell>

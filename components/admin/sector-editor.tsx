@@ -96,6 +96,7 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
               onChange={(value) => form.setValue("heroImageUrl", value, { shouldDirty: true })}
               folder="sectors"
               accept="image/*"
+              preview="image"
             />
           </div>
           <div className="col-md-6">
@@ -105,6 +106,7 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
               onChange={(value) => form.setValue("imageUrl", value, { shouldDirty: true })}
               folder="sectors"
               accept="image/*"
+              preview="image"
             />
           </div>
         </div>
@@ -232,6 +234,7 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
               onChange={(value) => form.setValue("officerImageUrl", value, { shouldDirty: true })}
               folder="sectors"
               accept="image/*"
+              preview="image"
             />
           </div>
           <div className="col-md-6">

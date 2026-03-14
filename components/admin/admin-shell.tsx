@@ -9,11 +9,21 @@ type AdminShellProps = {
   };
   title: string;
   description?: string;
+  backHref?: string;
+  backLabel?: string;
   actions?: React.ReactNode;
   children: React.ReactNode;
 };
 
-export function AdminShell({ user, title, description, actions, children }: AdminShellProps) {
+export function AdminShell({
+  user,
+  title,
+  description,
+  backHref,
+  backLabel = "Back",
+  actions,
+  children,
+}: AdminShellProps) {
   return (
     <div className="admin-shell">
       <nav className="admin-nav">
@@ -48,6 +58,15 @@ export function AdminShell({ user, title, description, actions, children }: Admi
         <div className="container">
           <div className="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
             <div>
+              {backHref ? (
+                <a
+                  href={backHref}
+                  className="btn btn-link px-0 mb-3 text-decoration-none d-inline-flex align-items-center gap-2"
+                >
+                  <span aria-hidden="true">←</span>
+                  <span>{backLabel}</span>
+                </a>
+              ) : null}
               <p className="text-uppercase small fw-semibold text-secondary mb-2">Admin dashboard</p>
               <h1 className="display-6 mb-2">{title}</h1>
               {description ? <p className="text-secondary mb-0">{description}</p> : null}

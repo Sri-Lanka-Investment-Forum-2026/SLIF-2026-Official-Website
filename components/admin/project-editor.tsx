@@ -171,6 +171,7 @@ export function ProjectEditor({ initialValue, sectors }: ProjectEditorProps) {
                     }
                     folder="projects"
                     accept="image/*"
+                    preview="image"
                   />
                 </div>
                 <div className="col-md-3">

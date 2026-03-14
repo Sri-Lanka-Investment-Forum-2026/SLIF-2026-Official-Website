@@ -10,6 +10,7 @@
     "prisma:generate": "prisma generate",
     "db:push": "node --import tsx scripts/db-push.ts",
     "db:seed": "node --import tsx scripts/seed.ts",
+    "admin:sync": "node --env-file=.env --import tsx scripts/sync-admin.ts",
     "media:check": "node --import tsx scripts/check-media.ts",
     "backup:sqlite": "bash scripts/backup-sqlite.sh"
   },

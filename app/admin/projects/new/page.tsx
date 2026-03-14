@@ -30,7 +30,13 @@ export default async function NewProjectPage() {
   const sectors = await getAllSectorsForAdmin();
 
   return (
-    <AdminShell user={user} title="New project" description="Create a new project and assign it to a sector.">
+    <AdminShell
+      user={user}
+      title="New project"
+      description="Create a new project and assign it to a sector."
+      backHref="/admin/projects"
+      backLabel="Back to projects"
+    >
       <ProjectEditor
         initialValue={{ ...emptyProject, sectorId: sectors[0]?.id ?? "" }}
         sectors={sectors.map((sector) => ({ id: sector.id, name: sector.name }))}

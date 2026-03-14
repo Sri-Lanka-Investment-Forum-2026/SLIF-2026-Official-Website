@@ -9,6 +9,7 @@ import { fetchBrochureBuffer } from "@/lib/brochure";
 const execFileAsync = promisify(execFile);
 
 export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
 function parsePositiveInteger(value: string | null, fallback: number) {
   const parsed = Number.parseInt(value ?? "", 10);

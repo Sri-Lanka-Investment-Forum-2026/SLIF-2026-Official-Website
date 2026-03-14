@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 type MediaInputProps = {
   label: string;
@@ -8,14 +8,20 @@ type MediaInputProps = {
   onChange: (value: string) => void;
   folder: string;
   accept?: string;
+  preview?: "image";
 };
 
-export function MediaInput({ label, value, onChange, folder, accept }: MediaInputProps) {
+export function MediaInput({ label, value, onChange, folder, accept, preview }: MediaInputProps) {
   const inputId = useId();
   const errorId = `${inputId}-error`;
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [previewFailed, setPreviewFailed] = useState(false);
+
+  useEffect(() => {
+    setPreviewFailed(false);
+  }, [value]);
 
   const upload = async (file: File) => {
     const formData = new FormData();
@@ -80,6 +86,22 @@ export function MediaInput({ label, value, onChange, folder, accept }: MediaInpu
       {error ? (
         <div id={errorId} className="text-danger small mt-2">
           {error}
+        </div>
+      ) : null}
+      {preview === "image" && value && !previewFailed ? (
+        <div className="admin-media-preview mt-3">
+          <img
+            src={value}
+            alt={`${label} preview`}
+            className="admin-media-preview-image"
+            loading="lazy"
+            onError={() => setPreviewFailed(true)}
+          />
+        </div>
+      ) : null}
+      {preview === "image" && value && previewFailed ? (
+        <div className="admin-media-preview admin-media-preview-fallback mt-3">
+          <span className="small text-secondary">Preview unavailable for this image.</span>
         </div>
       ) : null}
       <input

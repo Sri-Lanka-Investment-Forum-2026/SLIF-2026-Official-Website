@@ -23,6 +23,8 @@ export default async function EditProjectPage({ params }: EditProjectPageProps) 
       user={user}
       title={`Edit ${project.title}`}
       description="Update project content, assets, and download links."
+      backHref="/admin/projects"
+      backLabel="Back to projects"
     >
       <ProjectEditor
         initialValue={project}

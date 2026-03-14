@@ -2,6 +2,8 @@ import Link from "next/link";
 
 import { getPublishedSectors } from "@/lib/content";
 
+export const dynamic = "force-dynamic";
+
 export default async function SectorsPage() {
   const sectors = await getPublishedSectors();
   const projectCount = sectors.reduce((count, sector) => count + sector.projects.length, 0);

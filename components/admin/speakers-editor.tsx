@@ -92,6 +92,7 @@ function SessionCard({ control, register, setValue, watch, sessionIndex, removeS
                   }
                   folder="speakers"
                   accept="image/*"
+                  preview="image"
                 />
               </div>
             </div>

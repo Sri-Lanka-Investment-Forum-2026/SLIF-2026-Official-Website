@@ -35,7 +35,13 @@ export default async function NewSectorPage() {
   const user = await requireAdmin();
 
   return (
-    <AdminShell user={user} title="New sector" description="Create a new sector and publish it to the public site.">
+    <AdminShell
+      user={user}
+      title="New sector"
+      description="Create a new sector and publish it to the public site."
+      backHref="/admin/sectors"
+      backLabel="Back to sectors"
+    >
       <SectorEditor initialValue={emptySector} />
     </AdminShell>
   );
