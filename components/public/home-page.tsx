@@ -1,3 +1,4 @@
+import { CountdownTimer } from "@/components/public/countdown-timer";
 import { getSpeakerContent } from "@/lib/content";
 
 const featureCards = [
@@ -171,24 +172,7 @@ export async function HomePageContent() {
 
                 <div className="countdown-wrapper mt-4" data-aos="fade-up" data-aos-delay="500">
                   <h5 className="countdown-title">Event Starts In:</h5>
-                  <div className="countdown d-flex justify-content-start" data-count="2026-03-30T09:00:00">
-                    <div>
-                      <h3 className="count-days" />
-                      <h4>Days</h4>
-                    </div>
-                    <div>
-                      <h3 className="count-hours" />
-                      <h4>Hours</h4>
-                    </div>
-                    <div>
-                      <h3 className="count-minutes" />
-                      <h4>Minutes</h4>
-                    </div>
-                    <div>
-                      <h3 className="count-seconds" />
-                      <h4>Seconds</h4>
-                    </div>
-                  </div>
+                  <CountdownTimer targetDate="2026-03-30T09:00:00+05:30" />
                 </div>
               </div>
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { SectorProjectShowcase } from "@/components/public/sector-project-showcase";
 import { getSectorBySlug } from "@/lib/content";
 
 type SectorDetailPageProps = {
@@ -123,60 +123,10 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
             </section>
 
             <section id="sectorProjects" className="slif-section-modern">
-              <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-                <h2 className="section-title m-0">Investment Projects</h2>
-                <span className="badge rounded-pill bg-dark-subtle text-dark px-3 py-2">
-                  {sector.projects.length} projects
-                </span>
-              </div>
-
-              <div className="row g-4">
-                {sector.projects.map((project) => {
-                  const image = project.media[0]?.url ?? sector.heroImageUrl ?? "/assets/img/herobg.png";
-
-                  return (
-                    <div className="col-12 col-lg-6" key={project.id}>
-                      <article className="card border-0 shadow-sm h-100 overflow-hidden">
-                        <img src={image} alt={project.title} className="card-img-top" loading="lazy" />
-                        <div className="card-body p-4">
-                          <div className="d-flex justify-content-between align-items-start gap-3 mb-3">
-                            <div>
-                              <span className="badge text-bg-light text-uppercase mb-2">{project.type ?? "Project"}</span>
-                              <h3 className="h4 mb-2">{project.title}</h3>
-                              <p className="text-muted mb-0">{project.subTitle}</p>
-                            </div>
-                          </div>
-                          <div className="row g-3 mb-4">
-                            {project.stats.slice(0, 4).map((stat) => (
-                              <div className="col-6" key={stat.id}>
-                                <div className="border rounded-4 p-3 h-100 bg-light">
-                                  <p className="small text-muted mb-1">{stat.label}</p>
-                                  <p className="mb-0 fw-semibold">{stat.value}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                          <div className="d-flex justify-content-between align-items-center gap-3">
-                            <Link className="btn btn-primary" href={`/projects/${project.slug}`}>
-                              View Project
-                            </Link>
-                            {project.brochureUrl ? (
-                              <a
-                                className="btn btn-outline-primary"
-                                href={project.brochureUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                Brochure
-                              </a>
-                            ) : null}
-                          </div>
-                        </div>
-                      </article>
-                    </div>
-                  );
-                })}
-              </div>
+              <SectorProjectShowcase
+                projects={sector.projects}
+                fallbackImage={sector.heroImageUrl ?? "/assets/img/herobg.png"}
+              />
             </section>
 
             <section className="slif-section-modern">

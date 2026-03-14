@@ -158,38 +158,6 @@ function initSite() {
   window.addEventListener('load', aosInit);
 
   /**
-   * Countdown timer
-   */
-  function updateCountDown(countDownItem) {
-    const timeleft = new Date(countDownItem.getAttribute('data-count')).getTime() - new Date().getTime();
-
-    const days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
-
-    const daysElement = countDownItem.querySelector('.count-days');
-    const hoursElement = countDownItem.querySelector('.count-hours');
-    const minutesElement = countDownItem.querySelector('.count-minutes');
-    const secondsElement = countDownItem.querySelector('.count-seconds');
-
-    const formatCount = (value) => String(value).padStart(2, '0');
-
-    if (daysElement) daysElement.innerHTML = formatCount(days);
-    if (hoursElement) hoursElement.innerHTML = formatCount(hours);
-    if (minutesElement) minutesElement.innerHTML = formatCount(minutes);
-    if (secondsElement) secondsElement.innerHTML = formatCount(seconds);
-
-  }
-
-  document.querySelectorAll('.countdown').forEach(function(countDownItem) {
-    updateCountDown(countDownItem);
-    setInterval(function() {
-      updateCountDown(countDownItem);
-    }, 1000);
-  });
-
-  /**
    * Initiate Pure Counter
    */
   if (typeof PureCounter !== 'undefined') {

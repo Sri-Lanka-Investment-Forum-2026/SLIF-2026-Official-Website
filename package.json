@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "check": "tsc --noEmit",
+    "check": "next typegen && tsc --noEmit",
     "prisma:generate": "prisma generate",
     "db:push": "node --import tsx scripts/db-push.ts",
     "db:seed": "node --import tsx scripts/seed.ts",
