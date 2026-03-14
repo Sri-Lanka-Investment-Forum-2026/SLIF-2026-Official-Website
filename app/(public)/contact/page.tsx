@@ -1,7 +1,5 @@
-import { LegacyHtmlPage } from "@/components/public/legacy-html-page";
-import { loadLegacyMainHtml } from "@/lib/legacy-pages";
+import { ContactPageContent } from "@/components/public/contact-page";
 
-export default async function ContactPage() {
-  const html = await loadLegacyMainHtml("contact.html");
-  return <LegacyHtmlPage html={html} pageClass="contact-page" />;
+export default function ContactPage() {
+  return <ContactPageContent />;
 }

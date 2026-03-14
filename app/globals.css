@@ -17,11 +17,85 @@ img {
   max-width: 100%;
 }
 
-.legacy-html main,
-.legacy-html section,
-.legacy-html div,
-.legacy-html article {
-  max-width: 100%;
+.programme-timeline {
+  position: relative;
+  max-width: 980px;
+  margin: 0 auto;
+  padding-left: 64px;
+}
+
+.programme-timeline::before {
+  content: "";
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(var(--default-color-rgb), 0.2);
+}
+
+.programme-item {
+  position: relative;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 1.75rem;
+}
+
+.programme-node {
+  position: absolute;
+  left: -52px;
+  top: 18px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  border: 2px solid var(--accent-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--contrast-color);
+  z-index: 2;
+  box-shadow: 0 0 0 4px var(--surface-color);
+}
+
+.programme-card {
+  border: 1px solid rgba(var(--default-color-rgb), 0.1);
+  border-radius: 12px;
+  background: var(--surface-color);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.programme-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0;
+  font-size: 1.15rem;
+}
+
+.programme-title i {
+  color: rgba(var(--default-color-rgb), 0.65);
+  transition: color 0.3s ease;
+}
+
+.programme-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.12);
+  border-color: rgba(var(--accent-color-rgb), 0.35);
+}
+
+.programme-card:hover .programme-title i {
+  color: var(--accent-color);
+}
+
+.programme-sector-card {
+  border: 1px solid rgba(var(--default-color-rgb), 0.1);
+  border-radius: 10px;
+  height: 100%;
+  background: var(--surface-color);
 }
 
 .admin-shell {
@@ -97,4 +171,18 @@ img {
 
 .admin-muted {
   color: #64748b;
+}
+
+@media (max-width: 991.98px) {
+  .programme-timeline {
+    padding-left: 0;
+  }
+
+  .programme-timeline::before {
+    display: none;
+  }
+
+  .programme-node {
+    display: none;
+  }
 }
