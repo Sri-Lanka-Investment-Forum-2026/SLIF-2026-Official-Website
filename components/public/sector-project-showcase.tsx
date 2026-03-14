@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useEffect, useState } from "react";
+import { startTransition, useState } from "react";
+
+import {
+  hasRenderableBrochure,
+  ProjectBrochureDialog,
+} from "@/components/public/project-brochure-dialog";
 
 type ProjectStat = {
   id: string;
@@ -37,91 +42,6 @@ type SectorProjectShowcaseProps = {
 };
 
 type FilterMode = "all" | "flagship";
-
-function ProjectBrochureDialog({
-  onClose,
-  project,
-}: {
-  onClose: () => void;
-  project: SectorProject;
-}) {
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [onClose]);
-
-  if (!project.brochureUrl) {
-    return null;
-  }
-
-  return (
-    <div
-      className="slif-brochure-modal-backdrop"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="brochureTitle"
-      onClick={onClose}
-    >
-      <div
-        className="slif-brochure-modal"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <div className="slif-brochure-modal-header">
-          <div>
-            <p className="slif-brochure-kicker mb-1">Project Brief</p>
-            <h3 id="brochureTitle" className="mb-0">
-              {project.title}
-            </h3>
-          </div>
-          <button
-            type="button"
-            className="slif-brochure-close"
-            onClick={onClose}
-            aria-label="Close brochure dialog"
-          >
-            <i className="bi bi-x-lg" />
-          </button>
-        </div>
-
-        <div className="slif-brochure-modal-body">
-          {isLoading ? (
-            <div className="slif-brochure-loading" aria-live="polite">
-              <div className="slif-brochure-spinner" />
-              <p className="mb-2">Opening brochure</p>
-              <div className="slif-brochure-loading-bars" aria-hidden="true">
-                <span />
-                <span />
-                <span />
-              </div>
-            </div>
-          ) : null}
-
-          <iframe
-            title={`${project.title} brochure`}
-            src={project.brochureUrl}
-            className={`slif-brochure-frame${isLoading ? " is-loading" : ""}`}
-            onLoad={() => setIsLoading(false)}
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function SectorProjectShowcase({
   fallbackImage,
@@ -238,7 +158,7 @@ export function SectorProjectShowcase({
                     Contact Investment Team{" "}
                     <i className="bi bi-arrow-right ms-1" />
                   </Link>
-                  {project.brochureUrl ? (
+                  {hasRenderableBrochure(project.brochureUrl) ? (
                     <button
                       type="button"
                       className="btn btn-outline-primary"
@@ -246,7 +166,7 @@ export function SectorProjectShowcase({
                         setActiveProjectId(project.id);
                       }}
                     >
-                      View Project Brief
+                      Flip Brochure
                     </button>
                   ) : null}
                 </div>
