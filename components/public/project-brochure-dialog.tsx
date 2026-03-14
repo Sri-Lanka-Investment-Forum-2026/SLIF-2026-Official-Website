@@ -38,6 +38,8 @@ export function ProjectBrochureDialog({
   const presentationRef = useRef<HTMLDivElement>(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [frontReady, setFrontReady] = useState(false);
+  const [frontFailed, setFrontFailed] = useState(false);
+  const [backFailed, setBackFailed] = useState(false);
   const [pageCount, setPageCount] = useState(2);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -104,6 +106,8 @@ export function ProjectBrochureDialog({
   useEffect(() => {
     setFrontReady(false);
     setIsFlipped(false);
+    setFrontFailed(false);
+    setBackFailed(false);
     setPageCount(2);
 
     const timeoutId = window.setTimeout(() => {
@@ -145,11 +149,19 @@ export function ProjectBrochureDialog({
     };
   }, [metaUrl]);
 
+  useEffect(() => {
+    const hasBackPage = pageCount > 1 && !backFailed;
+    if (!hasBackPage && isFlipped) {
+      setIsFlipped(false);
+    }
+  }, [backFailed, isFlipped, pageCount]);
+
   if (!brochureUrl) {
     return null;
   }
 
-  const currentPage = isFlipped && pageCount > 1 ? 2 : 1;
+  const hasBackPage = pageCount > 1 && !backFailed;
+  const currentPage = isFlipped && hasBackPage ? 2 : 1;
 
   const toggleFullscreen = async () => {
     if (document.fullscreenElement) {
@@ -201,30 +213,32 @@ export function ProjectBrochureDialog({
                 className="slif-brochure-nav slif-brochure-nav-prev"
                 onClick={() => setIsFlipped(false)}
                 aria-label="Show first page"
-                disabled={!isFlipped || pageCount < 2}
+                disabled={!isFlipped || !hasBackPage}
               >
                 <i className="bi bi-chevron-left" aria-hidden="true" />
               </button>
 
-              <div className="slif-brochure-book-wrap">
+              <div
+                className={`slif-brochure-book-wrap${isFlipped ? " is-flipped" : ""}`}
+              >
                 <div className="slif-brochure-book-shadow" aria-hidden="true" />
                 <div
                   className={`slif-brochure-book${isFlipped ? " is-flipped" : ""}`}
                   role="button"
-                  tabIndex={pageCount > 1 ? 0 : -1}
+                  tabIndex={hasBackPage ? 0 : -1}
                   aria-label={
-                    pageCount > 1
+                    hasBackPage
                       ? `Flip brochure to ${isFlipped ? "front" : "back"} side`
                       : "Brochure preview"
                   }
                   onClick={() => {
-                    if (pageCount > 1) {
+                    if (hasBackPage) {
                       setIsFlipped((current) => !current);
                     }
                   }}
                   onKeyDown={(event) => {
                     if (
-                      pageCount > 1 &&
+                      hasBackPage &&
                       (event.key === "Enter" || event.key === " ")
                     ) {
                       event.preventDefault();
@@ -237,13 +251,32 @@ export function ProjectBrochureDialog({
                     aria-hidden={isFlipped}
                   >
                     <div className="slif-brochure-face-frame">
-                      <img
-                        title={`${project.title} brochure front`}
-                        src={frontPageUrl}
-                        className="slif-brochure-page-frame"
-                        onLoad={() => setFrontReady(true)}
-                        alt={`${project.title} brochure page 1`}
-                      />
+                      {frontFailed ? (
+                        <div
+                          className="slif-brochure-page-fallback"
+                          role="status"
+                        >
+                          <i
+                            className="bi bi-file-earmark-x"
+                            aria-hidden="true"
+                          />
+                          <h4>Brosure Unavailable</h4>
+                          <p>Please refresh the page or try again later.</p>
+                        </div>
+                      ) : (
+                        <img
+                          title={`${project.title} brochure front`}
+                          src={frontPageUrl}
+                          className="slif-brochure-page-frame"
+                          onLoad={() => setFrontReady(true)}
+                          onError={(event) => {
+                            event.currentTarget.style.display = "none";
+                            setFrontFailed(true);
+                            setFrontReady(true);
+                          }}
+                          alt={`${project.title} brochure page 1`}
+                        />
+                      )}
                     </div>
                   </div>
 
@@ -252,12 +285,30 @@ export function ProjectBrochureDialog({
                     aria-hidden={!isFlipped}
                   >
                     <div className="slif-brochure-face-frame">
-                      <img
-                        title={`${project.title} brochure back`}
-                        src={backPageUrl}
-                        className="slif-brochure-page-frame"
-                        alt={`${project.title} brochure page ${pageCount > 1 ? 2 : 1}`}
-                      />
+                      {backFailed ? (
+                        <div
+                          className="slif-brochure-page-fallback"
+                          role="status"
+                        >
+                          <i
+                            className="bi bi-file-earmark-break"
+                            aria-hidden="true"
+                          />
+                          <h4>Brosure Unavailable</h4>
+                          <p>Please refresh the page or try again later.</p>
+                        </div>
+                      ) : (
+                        <img
+                          title={`${project.title} brochure back`}
+                          src={backPageUrl}
+                          className="slif-brochure-page-frame"
+                          onError={(event) => {
+                            event.currentTarget.style.display = "none";
+                            setBackFailed(true);
+                          }}
+                          alt={`${project.title} brochure page ${pageCount > 1 ? 2 : 1}`}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -268,7 +319,7 @@ export function ProjectBrochureDialog({
                 className="slif-brochure-nav slif-brochure-nav-next"
                 onClick={() => setIsFlipped(true)}
                 aria-label="Show second page"
-                disabled={isFlipped || pageCount < 2}
+                disabled={isFlipped || !hasBackPage}
               >
                 <i className="bi bi-chevron-right" aria-hidden="true" />
               </button>
@@ -323,12 +374,12 @@ export function ProjectBrochureDialog({
                 type="button"
                 className="slif-brochure-rail-item"
                 onClick={() => {
-                  if (pageCount > 1) {
+                  if (hasBackPage) {
                     setIsFlipped((current) => !current);
                   }
                 }}
                 aria-label="Flip brochure"
-                disabled={pageCount < 2}
+                disabled={!hasBackPage}
               >
                 <span className="slif-brochure-rail-icon">
                   <i className="bi bi-arrow-repeat" aria-hidden="true" />
@@ -338,7 +389,7 @@ export function ProjectBrochureDialog({
 
               <div className="slif-brochure-rail-item slif-brochure-rail-item-static">
                 <span className="slif-brochure-rail-icon slif-brochure-rail-page">
-                  {currentPage}/{pageCount}
+                  {currentPage}/{hasBackPage ? pageCount : 1}
                 </span>
                 <span className="slif-brochure-rail-label">Page</span>
               </div>

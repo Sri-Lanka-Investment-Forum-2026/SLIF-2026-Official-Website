@@ -813,7 +813,7 @@
 }
 
 .slif-brochure-stage {
-  --slif-rail-width: 280px;
+  --slif-rail-width: 250px;
   min-height: 0;
   display: grid;
   grid-template-columns:
@@ -872,6 +872,16 @@
   background: radial-gradient(circle, rgba(13, 15, 24, 0.42), transparent 72%);
   filter: blur(12px);
   transform: translateX(-50%);
+  transition:
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease;
+}
+
+.slif-brochure-book-wrap.is-flipped .slif-brochure-book-shadow {
+  width: min(40vw, 520px);
+  opacity: 0.82;
+  transform: translateX(-44%);
 }
 
 .slif-brochure-book-wrap::before,
@@ -911,11 +921,20 @@
   outline: none;
   transform-style: preserve-3d;
   perspective: 2200px;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slif-brochure-book:hover {
+  transform: rotateX(1.5deg);
+}
+
+.slif-brochure-book.is-flipped {
+  transform: rotateX(1.5deg) rotateY(-2deg);
 }
 
 .slif-brochure-book:focus-visible {
   box-shadow: 0 0 0 4px rgba(63, 97, 255, 0.2);
-  border-radius: 28px;
+  border-radius: 0;
 }
 
 .slif-brochure-face {
@@ -923,12 +942,13 @@
   inset: 0;
   padding: 0.3rem;
   opacity: 0;
-  transform: rotateY(18deg) scale(0.985);
+  transform: rotateY(28deg) translateX(20px) scale(0.975);
   transition:
     opacity 0.45s ease,
     transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.45s ease;
-  filter: blur(1px);
+    filter 0.45s ease,
+    z-index 0.01s linear 0.2s;
+  filter: blur(0.8px) brightness(0.92);
   pointer-events: none;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -936,8 +956,8 @@
 
 .slif-brochure-face.is-active {
   opacity: 1;
-  transform: rotateY(0deg) scale(1);
-  filter: blur(0);
+  transform: rotateY(0deg) translateX(0) scale(1) translateZ(18px);
+  filter: blur(0) brightness(1);
   pointer-events: auto;
   z-index: 1;
 }
@@ -948,19 +968,20 @@
 
 .slif-brochure-book.is-flipped .slif-brochure-face-front {
   opacity: 0;
-  transform: rotateY(-24deg) translateX(-18px) scale(0.98);
+  transform: rotateY(-72deg) translateX(-16px) scale(0.965) translateZ(0);
+  filter: blur(0.9px) brightness(0.82);
   z-index: 0;
 }
 
 .slif-brochure-face-back {
   transform-origin: right center;
-  transform: rotateY(24deg) translateX(18px) scale(0.98);
+  transform: rotateY(72deg) translateX(16px) scale(0.965) translateZ(0);
 }
 
 .slif-brochure-book.is-flipped .slif-brochure-face-back {
   opacity: 1;
-  transform: rotateY(0deg) translateX(0) scale(1);
-  filter: blur(0);
+  transform: rotateY(0deg) translateX(0) scale(1) translateZ(18px);
+  filter: blur(0) brightness(1);
   z-index: 2;
 }
 
@@ -971,9 +992,72 @@
   place-items: center;
   overflow: hidden;
   background: #fff;
+  position: relative;
   box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.28),
-    0 8px 18px rgba(0, 0, 0, 0.2);
+    0 26px 60px rgba(8, 12, 22, 0.16),
+    0 10px 24px rgba(8, 12, 22, 0.1),
+    0 2px 8px rgba(8, 12, 22, 0.08);
+}
+
+.slif-brochure-face-frame::before,
+.slif-brochure-face-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.slif-brochure-face-frame::before {
+  background: linear-gradient(
+    115deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.04) 22%,
+    rgba(255, 255, 255, 0) 38%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.65;
+}
+
+.slif-brochure-face-frame::after {
+  inset: 0 auto 0 0;
+  width: 18px;
+  background: linear-gradient(
+    90deg,
+    rgba(8, 11, 20, 0.22),
+    rgba(8, 11, 20, 0.06),
+    transparent
+  );
+  opacity: 0;
+}
+
+.slif-brochure-face-front .slif-brochure-face-frame::after {
+  inset: 0 0 0 auto;
+  background: linear-gradient(
+    -90deg,
+    rgba(8, 11, 20, 0.24),
+    rgba(8, 11, 20, 0.08),
+    transparent
+  );
+}
+
+.slif-brochure-book.is-flipped
+  .slif-brochure-face-front
+  .slif-brochure-face-frame::before,
+.slif-brochure-book.is-flipped
+  .slif-brochure-face-back
+  .slif-brochure-face-frame::before {
+  opacity: 0.38;
+}
+
+.slif-brochure-book.is-flipped
+  .slif-brochure-face-front
+  .slif-brochure-face-frame::after,
+.slif-brochure-face-back.is-active .slif-brochure-face-frame::after,
+.slif-brochure-face-front.is-active .slif-brochure-face-frame::after {
+  opacity: 1;
 }
 
 .slif-brochure-page-frame {
@@ -982,6 +1066,37 @@
   height: 100%;
   object-fit: contain;
   background: #fff;
+}
+
+.slif-brochure-page-fallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.85rem;
+  padding: 2rem;
+  text-align: center;
+  background:
+    radial-gradient(circle at top, rgba(99, 116, 255, 0.08), transparent 35%),
+    linear-gradient(180deg, #f7f8fc, #eceff7);
+  color: #17345f;
+}
+
+.slif-brochure-page-fallback i {
+  font-size: 2rem;
+  color: #4f67da;
+}
+
+.slif-brochure-page-fallback h4 {
+  margin: 0;
+  color: #102743;
+}
+
+.slif-brochure-page-fallback p {
+  margin: 0;
+  max-width: 18rem;
+  color: #567191;
 }
 
 .slif-brochure-nav {
