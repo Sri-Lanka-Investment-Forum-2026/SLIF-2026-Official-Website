@@ -26,7 +26,7 @@ const disclaimerItems = [
 export default function TermsPage() {
   return (
     <div className="terms-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <PublicPageTitle
           title="Terms"
           description="Terms governing the use of the Sri Lanka Investment Forum website, registrations, and related services."

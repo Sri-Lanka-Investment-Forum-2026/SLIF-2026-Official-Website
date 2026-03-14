@@ -130,7 +130,7 @@ export async function HomePageContent() {
 
   return (
     <div className="index-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <section id="hero" className="hero section">
           <div className="container" data-aos="fade-up" data-aos-delay="100">
             <div className="row align-items-center">
@@ -161,7 +161,7 @@ export async function HomePageContent() {
                     href="https://register.srilankainvestmentforum.com/"
                     className="btn btn-primary btn-lg me-3"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     Register Now
                   </a>
@@ -405,7 +405,7 @@ export async function HomePageContent() {
                     href="https://register.srilankainvestmentforum.com/"
                     className="btn btn-primary"
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                   >
                     Register Now
                   </a>

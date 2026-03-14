@@ -8,7 +8,7 @@ export default async function SectorsPage() {
 
   return (
     <div className="sectors-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <div className="page-title slif-page-hero">
           <div className="slif-page-hero-overlay" />
           <div className="heading position-relative">
@@ -41,7 +41,7 @@ export default async function SectorsPage() {
             <div className="col-12 col-md-6 col-lg-4">
               <article className="slif-stat-card h-100">
                 <span className="slif-card-icon-box" aria-hidden="true">
-                  <i className="bi bi-grid-1x2-fill" />
+                  <i className="bi bi-grid-1x2-fill" aria-hidden="true" />
                 </span>
                 <p className="slif-stat-value mb-1">{sectors.length} Sectors</p>
                 <p className="slif-stat-label mb-0">Priority investment sectors</p>
@@ -50,7 +50,7 @@ export default async function SectorsPage() {
             <div className="col-12 col-md-6 col-lg-4">
               <article className="slif-stat-card h-100">
                 <span className="slif-card-icon-box" aria-hidden="true">
-                  <i className="bi bi-diagram-3-fill" />
+                  <i className="bi bi-diagram-3-fill" aria-hidden="true" />
                 </span>
                 <p className="slif-stat-value mb-1">{projectCount} Projects</p>
                 <p className="slif-stat-label mb-0">Investment-ready projects</p>
@@ -59,7 +59,7 @@ export default async function SectorsPage() {
             <div className="col-12 col-md-6 col-lg-4">
               <article className="slif-stat-card h-100">
                 <span className="slif-card-icon-box" aria-hidden="true">
-                  <i className="bi bi-cash-stack" />
+                  <i className="bi bi-cash-stack" aria-hidden="true" />
                 </span>
                 <p className="slif-stat-value mb-1">US $ 6 Bn.</p>
                 <p className="slif-stat-label mb-0">Indicative investment value</p>
@@ -92,7 +92,11 @@ export default async function SectorsPage() {
                     >
                       <article className="card border-0 sector-card h-100">
                         <div className="sector-media">
-                          <img src={sector.heroImageUrl ?? ""} loading="lazy" alt={sector.name} />
+                          <img
+                            src={sector.heroImageUrl ?? "/assets/img/herobg.png"}
+                            loading="lazy"
+                            alt={`${sector.name} sector`}
+                          />
                           <div className="sector-overlay" />
                           <div className="sector-title-wrap">
                             <h3 className="sector-title">{sector.name}</h3>
@@ -109,7 +113,7 @@ export default async function SectorsPage() {
                             ))}
                           </div>
                           <span className="btn btn-primary sector-action">
-                            View Projects <i className="bi bi-arrow-right" />
+                            View Projects <i className="bi bi-arrow-right" aria-hidden="true" />
                           </span>
                         </div>
                       </article>

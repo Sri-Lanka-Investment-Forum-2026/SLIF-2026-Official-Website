@@ -3,10 +3,8 @@
 import Link from "next/link";
 import { startTransition, useState } from "react";
 
-import {
-  hasRenderableBrochure,
-  ProjectBrochureDialog,
-} from "@/components/public/project-brochure-dialog";
+import { ProjectBrochureDialog } from "@/components/public/project-brochure-dialog";
+import { hasRenderableBrochure } from "@/lib/utils";
 
 type ProjectStat = {
   id: string;
@@ -66,19 +64,24 @@ export function SectorProjectShowcase({
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
         <h2 className="section-title m-0">Investment Projects</h2>
         <div className="d-flex align-items-center gap-3 flex-wrap">
-          <span className="badge rounded-pill bg-dark-subtle text-dark px-3 py-2">
+          <span
+            className="badge rounded-pill bg-dark-subtle text-dark px-3 py-2"
+            aria-live="polite"
+          >
             {visibleProjects.length} projects
           </span>
           {hasFlagshipProjects ? (
             <div
               className="slif-project-filter"
-              role="tablist"
+              role="group"
               aria-label="Project filter"
             >
               <button
                 type="button"
                 className={`btn${filterMode === "all" ? " is-active" : ""}`}
                 onClick={() => startTransition(() => setFilterMode("all"))}
+                aria-controls="flagshipProjects"
+                aria-pressed={filterMode === "all"}
               >
                 All
               </button>
@@ -86,6 +89,8 @@ export function SectorProjectShowcase({
                 type="button"
                 className={`btn${filterMode === "flagship" ? " is-active" : ""}`}
                 onClick={() => startTransition(() => setFilterMode("flagship"))}
+                aria-controls="flagshipProjects"
+                aria-pressed={filterMode === "flagship"}
               >
                 Flagship
               </button>
@@ -98,6 +103,9 @@ export function SectorProjectShowcase({
         {visibleProjects.map((project) => {
           const image = project.media[0]?.url ?? fallbackImage;
           const isFlagship = project.type?.toLowerCase() === "flagship";
+          const imageAlt =
+            project.media[0]?.altText?.trim() ||
+            `${project.title} project preview`;
 
           return (
             <article key={project.id} className="slif-project-feature-card">
@@ -108,7 +116,7 @@ export function SectorProjectShowcase({
                 <div className="slif-media-frame">
                   <img
                     src={image}
-                    alt={project.media[0]?.altText ?? project.title}
+                    alt={imageAlt}
                     className="slif-project-media-item"
                     loading="lazy"
                   />
@@ -165,8 +173,10 @@ export function SectorProjectShowcase({
                       onClick={() => {
                         setActiveProjectId(project.id);
                       }}
+                      aria-haspopup="dialog"
+                      aria-label={`Open brochure preview for ${project.title}`}
                     >
-                      Flip Brochure
+                      View Project Brochure
                     </button>
                   ) : null}
                 </div>

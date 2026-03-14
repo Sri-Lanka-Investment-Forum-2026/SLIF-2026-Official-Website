@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { SectorProjectShowcase } from "@/components/public/sector-project-showcase";
 import { getSectorBySlug } from "@/lib/content";
+import { hasUsableHref, isAbsoluteUrl } from "@/lib/utils";
 
 type SectorDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -39,9 +41,16 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
     notFound();
   }
 
+  const consultationLink = hasUsableHref(sector.consultationLink)
+    ? sector.consultationLink
+    : null;
+  const reportLink = hasUsableHref(sector.reportLink) ? sector.reportLink : null;
+  const officerPhone = sector.officerPhone?.trim() ?? "";
+  const officerEmail = sector.officerEmail?.trim() ?? "";
+
   return (
     <div className="sectors-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <div className="slif-sector-page">
           <section className="slif-sector-hero position-relative">
             <img
@@ -151,7 +160,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
             </section>
 
             <section className="slif-sector-contact p-5 rounded-4 mb-5">
-              <section className="slif-sector-officer-wrapper">
+              <div className="slif-sector-officer-wrapper">
                 <div className="container">
                   <div className="slif-sector-officer-section">
                     <div className="slif-officer-wrapper">
@@ -159,22 +168,30 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                         <h2 className="slif-officer-title mb-3">Interested in This Sector?</h2>
                         <p className="slif-officer-desc mb-4">{sector.officerDescription}</p>
                         <div className="slif-officer-actions">
-                          <a
-                            href={sector.consultationLink || "#"}
-                            className="btn btn-light slif-cta-btn"
-                            target={sector.consultationLink?.startsWith("http") ? "_blank" : undefined}
-                            rel="noreferrer"
-                          >
-                            Book a Consultation →
-                          </a>
-                          <a
-                            href={sector.reportLink || "#"}
-                            className="btn btn-outline-light slif-cta-btn"
-                            target={sector.reportLink?.startsWith("http") ? "_blank" : undefined}
-                            rel="noreferrer"
-                          >
-                            Download Sector Report
-                          </a>
+                          {consultationLink ? (
+                            <a
+                              href={consultationLink}
+                              className="btn btn-light slif-cta-btn"
+                              target={isAbsoluteUrl(consultationLink) ? "_blank" : undefined}
+                              rel={isAbsoluteUrl(consultationLink) ? "noopener noreferrer" : undefined}
+                            >
+                              Book a Consultation
+                            </a>
+                          ) : (
+                            <Link href="/contact" className="btn btn-light slif-cta-btn">
+                              Contact Investment Team
+                            </Link>
+                          )}
+                          {reportLink ? (
+                            <a
+                              href={reportLink}
+                              className="btn btn-outline-light slif-cta-btn"
+                              target={isAbsoluteUrl(reportLink) ? "_blank" : undefined}
+                              rel={isAbsoluteUrl(reportLink) ? "noopener noreferrer" : undefined}
+                            >
+                              Download Sector Report
+                            </a>
+                          ) : null}
                         </div>
                       </div>
 
@@ -193,18 +210,25 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                         </div>
                         <hr />
                         <div>
-                          <p className="mb-2">
-                            <strong>Direct Line:</strong> <span>{sector.officerPhone}</span>
-                          </p>
-                          <p className="mb-0">
-                            <strong>Email:</strong> <span>{sector.officerEmail}</span>
-                          </p>
+                          {officerPhone ? (
+                            <p className="mb-2">
+                              <strong>Direct Line:</strong>{" "}
+                              <a href={`tel:${officerPhone.replace(/[^\d+]/g, "")}`}>
+                                {officerPhone}
+                              </a>
+                            </p>
+                          ) : null}
+                          {officerEmail ? (
+                            <p className="mb-0">
+                              <strong>Email:</strong> <a href={`mailto:${officerEmail}`}>{officerEmail}</a>
+                            </p>
+                          ) : null}
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </section>
+              </div>
             </section>
           </div>
         </div>

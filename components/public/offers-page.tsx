@@ -3,7 +3,7 @@ import { PublicPageTitle } from "@/components/public/page-title";
 export function OffersPageContent() {
   return (
     <div className="venue-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <PublicPageTitle title="Exclusive Offers" topPadding />
 
         <section id="offers-flyer" className="section">

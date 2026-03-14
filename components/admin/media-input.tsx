@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 
 type MediaInputProps = {
   label: string;
@@ -11,6 +11,8 @@ type MediaInputProps = {
 };
 
 export function MediaInput({ label, value, onChange, folder, accept }: MediaInputProps) {
+  const inputId = useId();
+  const errorId = `${inputId}-error`;
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,12 +50,17 @@ export function MediaInput({ label, value, onChange, folder, accept }: MediaInpu
 
   return (
     <div>
-      <label className="form-label">{label}</label>
+      <label className="form-label" htmlFor={inputId}>
+        {label}
+      </label>
       <input
+        id={inputId}
+        type="url"
         className="form-control"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder="Paste an existing MinIO/public URL or upload a file"
+        aria-describedby={error ? errorId : undefined}
       />
       <div className="d-flex flex-wrap align-items-center gap-2 mt-2">
         <button
@@ -65,12 +72,16 @@ export function MediaInput({ label, value, onChange, folder, accept }: MediaInpu
           {isUploading ? "Uploading..." : "Upload file"}
         </button>
         {value ? (
-          <a className="btn btn-link btn-sm p-0" href={value} target="_blank" rel="noreferrer">
+          <a className="btn btn-link btn-sm p-0" href={value} target="_blank" rel="noopener noreferrer">
             Open asset
           </a>
         ) : null}
       </div>
-      {error ? <div className="text-danger small mt-2">{error}</div> : null}
+      {error ? (
+        <div id={errorId} className="text-danger small mt-2">
+          {error}
+        </div>
+      ) : null}
       <input
         ref={fileRef}
         type="file"

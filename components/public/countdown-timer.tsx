@@ -20,6 +20,13 @@ const zeroState: CountdownState = {
   seconds: "00",
 };
 
+const countdownUnits = [
+  { key: "days", label: "Days" },
+  { key: "hours", label: "Hours" },
+  { key: "minutes", label: "Minutes" },
+  { key: "seconds", label: "Seconds" },
+] as const;
+
 function formatUnit(value: number) {
   return String(Math.max(0, value)).padStart(2, "0");
 }
@@ -59,24 +66,22 @@ export function CountdownTimer({ targetDate }: CountdownTimerProps) {
     };
   }, [targetDate]);
 
+  const accessibleLabel = `${countdown.days} days, ${countdown.hours} hours, ${countdown.minutes} minutes, and ${countdown.seconds} seconds until the event starts`;
+
   return (
-    <div className="countdown d-flex justify-content-start" aria-label="Event countdown">
-      <div>
-        <h3>{countdown.days}</h3>
-        <h4>Days</h4>
-      </div>
-      <div>
-        <h3>{countdown.hours}</h3>
-        <h4>Hours</h4>
-      </div>
-      <div>
-        <h3>{countdown.minutes}</h3>
-        <h4>Minutes</h4>
-      </div>
-      <div>
-        <h3>{countdown.seconds}</h3>
-        <h4>Seconds</h4>
-      </div>
+    <div
+      className="countdown d-flex justify-content-start"
+      role="timer"
+      aria-live="off"
+      aria-atomic="true"
+      aria-label={accessibleLabel}
+    >
+      {countdownUnits.map((unit) => (
+        <div key={unit.key}>
+          <h3>{countdown[unit.key]}</h3>
+          <h4>{unit.label}</h4>
+        </div>
+      ))}
     </div>
   );
 }

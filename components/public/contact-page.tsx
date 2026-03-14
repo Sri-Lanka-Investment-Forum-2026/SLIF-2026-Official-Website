@@ -1,4 +1,11 @@
 import { PublicPageTitle } from "@/components/public/page-title";
+import { hasUsableHref, isAbsoluteUrl } from "@/lib/utils";
+
+type SocialLink = {
+  href?: string;
+  icon: string;
+  label: string;
+};
 
 const contactCards = [
   {
@@ -26,7 +33,7 @@ const contactCards = [
   },
 ] as const;
 
-const socialLinks = [
+const socialLinks: SocialLink[] = [
   {
     href: "https://web.facebook.com/people/BOI-Sri-Lanka/100071941136865/",
     icon: "bi-facebook",
@@ -38,7 +45,6 @@ const socialLinks = [
     label: "X",
   },
   {
-    href: "#",
     icon: "bi-instagram",
     label: "Instagram",
   },
@@ -48,16 +54,17 @@ const socialLinks = [
     label: "LinkedIn",
   },
   {
-    href: "#",
     icon: "bi-youtube",
     label: "YouTube",
   },
 ] as const;
 
 export function ContactPageContent() {
+  const availableSocialLinks = socialLinks.filter((link) => hasUsableHref(link.href));
+
   return (
     <div className="contact-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <PublicPageTitle
           title="Contact"
           description="For inquiries regarding participation, partnerships, sponsorship opportunities, or general information about the Sri Lanka Investment Forum 2026, please contact the organizing team."
@@ -85,7 +92,7 @@ export function ContactPageContent() {
                   {contactCards.map((card) => (
                     <div key={card.label} className="info-card">
                       <div className="icon-container">
-                        <i className={`bi ${card.icon}`} />
+                        <i className={`bi ${card.icon}`} aria-hidden="true" />
                       </div>
                       <div className="card-content">
                         <h4>{card.label}</h4>
@@ -93,8 +100,8 @@ export function ContactPageContent() {
                           {"href" in card && card.href ? (
                             <a
                               href={card.href}
-                              target={card.href.startsWith("http") ? "_blank" : undefined}
-                              rel={card.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                              target={isAbsoluteUrl(card.href) ? "_blank" : undefined}
+                              rel={isAbsoluteUrl(card.href) ? "noopener noreferrer" : undefined}
                             >
                               {card.value}
                             </a>
@@ -110,15 +117,15 @@ export function ContactPageContent() {
                 <div className="social-links-panel">
                   <h5>Follow Us</h5>
                   <div className="social-icons">
-                    {socialLinks.map((link) => (
+                    {availableSocialLinks.map((link) => (
                       <a
                         key={link.label}
                         href={link.href}
-                        target={link.href.startsWith("http") ? "_blank" : undefined}
-                        rel={link.href.startsWith("http") ? "noreferrer" : undefined}
-                        aria-label={link.label}
+                        target={isAbsoluteUrl(link.href) ? "_blank" : undefined}
+                        rel={isAbsoluteUrl(link.href) ? "noopener noreferrer" : undefined}
+                        aria-label={`Follow us on ${link.label}`}
                       >
-                        <i className={`bi ${link.icon}`} />
+                        <i className={`bi ${link.icon}`} aria-hidden="true" />
                       </a>
                     ))}
                   </div>
@@ -134,6 +141,7 @@ export function ContactPageContent() {
                   <div className="map-container">
                     <iframe
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.6475603082927!2d79.8409383736529!3d6.932660018276178!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae259268c28e33d%3A0x7bffb6c3c9934fb5!2sBoard%20of%20investment%20of%20SriLanka!5e0!3m2!1sen!2slk!4v1771916380357!5m2!1sen!2slk"
+                      title="Map showing the Board of Investment of Sri Lanka office"
                       width="100%"
                       height="100%"
                       style={{ border: 0 }}

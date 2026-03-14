@@ -14,3 +14,9 @@ export const cleanArray = <T>(items: T[]) => items.filter(Boolean);
 
 export const isAbsoluteUrl = (value?: string | null) =>
   Boolean(value && /^(https?:)?\/\//i.test(value));
+
+export const hasUsableHref = (value?: string | null) =>
+  Boolean(value && value.trim() && value.trim() !== "#");
+
+export const hasRenderableBrochure = (value?: string | null): value is string =>
+  hasUsableHref(value);

@@ -1,5 +1,7 @@
 import { PublicPageTitle } from "@/components/public/page-title";
 
+const hotelFinderUrl = "https://www.google.com/maps/search/hotels+near+Cinnamon+Life+Colombo/";
+
 const venueFeatures = [
   { icon: "bi-people", label: "2,500 + Capacity" },
   { icon: "bi-wifi", label: "High-Speed WiFi" },
@@ -25,7 +27,7 @@ const travelOptions = [
 export function VenuePageContent() {
   return (
     <div className="venue-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <PublicPageTitle
           title="Venue"
           subtitle="Cinnamon Life Colombo"
@@ -49,7 +51,7 @@ export function VenuePageContent() {
                       className="img-fluid"
                     />
                     <div className="venue-badge">
-                      <i className="bi bi-calendar-event" />
+                      <i className="bi bi-calendar-event" aria-hidden="true" />
                       March 30, 2026
                     </div>
                   </div>
@@ -86,6 +88,7 @@ export function VenuePageContent() {
                   <div className="map-container">
                     <iframe
                       src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.709384943983!2d79.8479589!3d6.925300600000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593dd3494367%3A0x661a9e702317a6c6!2sCinnamon%20Life%20at%20City%20of%20Dreams!5e0!3m2!1sen!2slk!4v1771915704815!5m2!1sen!2slk"
+                      title="Map showing Cinnamon Life Colombo"
                       width="600"
                       height="450"
                       style={{ border: 0 }}
@@ -112,12 +115,22 @@ export function VenuePageContent() {
                   </div>
 
                   <div className="venue-actions">
-                    <a href="https://maps.app.goo.gl/dy3CngbxGR8b82ENA" className="btn btn-primary">
-                      <i className="bi bi-map" />
+                    <a
+                      href="https://maps.app.goo.gl/dy3CngbxGR8b82ENA"
+                      className="btn btn-primary"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i className="bi bi-map" aria-hidden="true" />
                       Get Directions
                     </a>
-                    <a href="#" className="btn btn-outline">
-                      <i className="bi bi-building" />
+                    <a
+                      href={hotelFinderUrl}
+                      className="btn btn-outline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <i className="bi bi-building" aria-hidden="true" />
                       Find Hotels
                     </a>
                   </div>

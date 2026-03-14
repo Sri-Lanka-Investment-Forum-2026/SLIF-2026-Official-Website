@@ -25,7 +25,7 @@ export function AdminShell({ user, title, description, actions, children }: Admi
               <Link href="/admin/sectors">Sectors</Link>
               <Link href="/admin/projects">Projects</Link>
               <Link href="/admin/speakers">Speakers</Link>
-              <Link href="/" target="_blank">
+              <Link href="/" target="_blank" rel="noopener noreferrer">
                 View site
               </Link>
             </div>

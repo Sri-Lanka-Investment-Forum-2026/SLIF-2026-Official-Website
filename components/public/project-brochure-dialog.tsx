@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+
+import { hasRenderableBrochure } from "@/lib/utils";
 
 type BrochureProject = {
   brochureUrl: string | null;
@@ -22,10 +24,12 @@ function buildBrochurePageUrl(url: string, page: number) {
   return `/api/brochure/page?${params.toString()}`;
 }
 
-export function hasRenderableBrochure(
-  url: string | null | undefined,
-): url is string {
-  return Boolean(url && url !== "#");
+function getFocusableElements(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((element) => !element.hasAttribute("hidden"));
 }
 
 export function ProjectBrochureDialog({
@@ -36,6 +40,10 @@ export function ProjectBrochureDialog({
   project: BrochureProject;
 }) {
   const presentationRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const titleId = useId();
+  const descriptionId = useId();
   const [isFlipped, setIsFlipped] = useState(false);
   const [frontReady, setFrontReady] = useState(false);
   const [frontFailed, setFrontFailed] = useState(false);
@@ -44,8 +52,11 @@ export function ProjectBrochureDialog({
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -55,6 +66,28 @@ export function ProjectBrochureDialog({
         }
 
         onClose();
+      }
+
+      if (event.key === "Tab" && presentationRef.current) {
+        const focusableElements = getFocusableElements(presentationRef.current);
+
+        if (!focusableElements.length) {
+          event.preventDefault();
+          presentationRef.current.focus();
+          return;
+        }
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+        const activeElement = document.activeElement;
+
+        if (event.shiftKey && activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        } else if (!event.shiftKey && activeElement === lastElement) {
+          event.preventDefault();
+          firstElement.focus();
+        }
       }
 
       if (event.key === "ArrowRight") {
@@ -71,6 +104,7 @@ export function ProjectBrochureDialog({
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
+      previousFocusRef.current?.focus();
     };
   }, [onClose]);
 
@@ -164,12 +198,16 @@ export function ProjectBrochureDialog({
   const currentPage = isFlipped && hasBackPage ? 2 : 1;
 
   const toggleFullscreen = async () => {
-    if (document.fullscreenElement) {
-      await document.exitFullscreen();
-      return;
-    }
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+        return;
+      }
 
-    await presentationRef.current?.requestFullscreen();
+      await presentationRef.current?.requestFullscreen();
+    } catch {
+      // Ignore fullscreen errors and keep the current viewer state.
+    }
   };
 
   return (
@@ -177,17 +215,23 @@ export function ProjectBrochureDialog({
       className="slif-brochure-modal-backdrop"
       role="dialog"
       aria-modal="true"
-      aria-labelledby="brochureTitle"
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
       onClick={onClose}
     >
       <div
         className="slif-brochure-modal"
         ref={presentationRef}
         onClick={(event) => event.stopPropagation()}
+        tabIndex={-1}
       >
-        <h3 id="brochureTitle" className="visually-hidden">
+        <h3 id={titleId} className="visually-hidden">
           {project.title}
         </h3>
+        <p id={descriptionId} className="visually-hidden">
+          Use the left and right arrow keys to switch pages. Press Escape to close the brochure
+          viewer.
+        </p>
 
         <div className="slif-brochure-modal-body">
           {!frontReady ? (
@@ -260,7 +304,7 @@ export function ProjectBrochureDialog({
                             className="bi bi-file-earmark-x"
                             aria-hidden="true"
                           />
-                          <h4>Brosure Unavailable</h4>
+                          <h4>Brochure Unavailable</h4>
                           <p>Please refresh the page or try again later.</p>
                         </div>
                       ) : (
@@ -294,7 +338,7 @@ export function ProjectBrochureDialog({
                             className="bi bi-file-earmark-break"
                             aria-hidden="true"
                           />
-                          <h4>Brosure Unavailable</h4>
+                          <h4>Brochure Unavailable</h4>
                           <p>Please refresh the page or try again later.</p>
                         </div>
                       ) : (
@@ -331,6 +375,7 @@ export function ProjectBrochureDialog({
                 className="slif-brochure-rail-item"
                 onClick={onClose}
                 aria-label="Exit brochure viewer"
+                ref={closeButtonRef}
               >
                 <span className="slif-brochure-rail-icon">
                   <i className="bi bi-x-lg" aria-hidden="true" />

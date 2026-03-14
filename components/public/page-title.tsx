@@ -25,7 +25,7 @@ export function PublicPageTitle({
           <div className="row d-flex justify-content-center text-center">
             <div className={`col-lg-8${topPadding ? " pt-4" : ""}`}>
               <h1 className="heading-title">{title}</h1>
-              {subtitle ? <h2 className="heading-title">{subtitle}</h2> : null}
+              {subtitle ? <p className="heading-title h5 mb-3">{subtitle}</p> : null}
               {description ? <p className="mb-0">{description}</p> : null}
             </div>
           </div>
@@ -33,7 +33,7 @@ export function PublicPageTitle({
       </div>
 
       {breadcrumbs?.length ? (
-        <nav className="breadcrumbs">
+        <nav className="breadcrumbs" aria-label={`${title} breadcrumb`}>
           <div className="container">
             <ol>
               {breadcrumbs.map((breadcrumb, index) => {
@@ -42,7 +42,7 @@ export function PublicPageTitle({
                 return (
                   <li key={`${breadcrumb.label}-${index}`} className={isCurrent ? "current" : undefined}>
                     {isCurrent || !breadcrumb.href ? (
-                      breadcrumb.label
+                      <span aria-current={isCurrent ? "page" : undefined}>{breadcrumb.label}</span>
                     ) : (
                       <a href={breadcrumb.href}>{breadcrumb.label}</a>
                     )}

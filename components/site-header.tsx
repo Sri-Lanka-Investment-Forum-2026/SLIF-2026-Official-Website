@@ -4,7 +4,7 @@ export function SiteHeader() {
   return (
     <header id="header" className="header d-flex align-items-center fixed-top">
       <div className="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-        <nav id="navmenu" className="navmenu">
+        <nav id="navmenu" className="navmenu" aria-label="Primary">
           <ul>
             <li>
               <Link href="/">Home</Link>
@@ -42,8 +42,9 @@ export function SiteHeader() {
           <a
             className="btn-getstarted"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             href="https://register.srilankainvestmentforum.com/"
+            aria-label="Register now for Sri Lanka Investment Forum 2026"
           >
             Register Now
           </a>

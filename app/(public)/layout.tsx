@@ -10,6 +10,9 @@ export default function PublicLayout({
 }>) {
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        Skip to main content
+      </a>
       <SiteHeader />
       {children}
       <SiteFooter />

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { getProjectBySlugOrLegacyId } from "@/lib/content";
+import { hasRenderableBrochure } from "@/lib/utils";
 
 type ProjectDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -38,7 +39,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   return (
     <div className="project-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <div className="slif-project-page">
           <section className="slif-project-hero mb-4 mb-lg-5">
             <div className="slif-project-hero-media">
@@ -48,6 +49,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   controls
                   preload="metadata"
                   poster={heroImage}
+                  aria-label={`Video overview for ${project.title}`}
                 >
                   <source src={project.heroVideoUrl ?? project.videoUrl ?? ""} />
                 </video>
@@ -104,7 +106,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                         <div key={item.id} className="col-6 col-lg-4">
                           <img
                             src={item.url}
-                            alt={item.altText ?? project.title}
+                            alt={item.altText?.trim() || `${project.title} media`}
                             className="rounded-4 shadow-sm h-100 object-fit-cover"
                             loading="lazy"
                           />
@@ -129,8 +131,13 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                     ))}
                   </div>
                   <div className="d-grid gap-2 mt-4">
-                    {project.brochureUrl ? (
-                      <a className="btn btn-primary" href={project.brochureUrl} target="_blank" rel="noreferrer">
+                    {hasRenderableBrochure(project.brochureUrl) ? (
+                      <a
+                        className="btn btn-primary"
+                        href={project.brochureUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         Download Brochure
                       </a>
                     ) : null}

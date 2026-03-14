@@ -113,7 +113,7 @@ const sections: PrivacySection[] = [
 export default function PrivacyPage() {
   return (
     <div className="privacy-page">
-      <main className="main">
+      <main id="main-content" className="main" tabIndex={-1}>
         <PublicPageTitle
           title="Privacy"
           description="How the Sri Lanka Investment Forum handles personal information submitted through registrations, enquiries, and related event services."
@@ -128,7 +128,7 @@ export default function PrivacyPage() {
             <div className="privacy-header" data-aos="fade-up">
               <div className="header-content">
                 <div className="last-updated">Effective Date: February 27, 2025</div>
-                <h1>Privacy Policy</h1>
+                <h2>Privacy Policy</h2>
                 <p className="intro-text">
                   This Privacy Policy describes how we collect, use, process, and disclose
                   information in connection with your access to and use of the Sri Lanka
