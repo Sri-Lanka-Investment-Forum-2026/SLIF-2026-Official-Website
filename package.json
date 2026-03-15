@@ -10,12 +10,9 @@
     "pb:schema": "node --env-file=.env --import tsx scripts/pocketbase-apply-schema.ts",
     "pb:bootstrap-admin": "node --env-file=.env --import tsx scripts/pocketbase-bootstrap-admin.ts",
     "pb:setup": "npm run pb:schema && npm run pb:bootstrap-admin",
-    "pb:import": "node --env-file=.env --import tsx scripts/sqlite-to-pocketbase.ts",
     "pb:seed": "node --env-file=.env --import tsx scripts/seed.ts",
     "pb:setup:seed": "npm run pb:setup && npm run pb:seed",
-    "pb:setup:import": "npm run pb:setup && npm run pb:import",
-    "media:check": "node --env-file=.env --import tsx scripts/check-media.ts",
-    "migrate:cutover": "npm run pb:schema && npm run pb:bootstrap-admin && npm run pb:import"
+    "media:check": "node --env-file=.env --import tsx scripts/check-media.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.908.0",

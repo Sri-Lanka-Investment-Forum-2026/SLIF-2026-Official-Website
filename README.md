@@ -12,8 +12,7 @@
 4. Apply the PocketBase schema: `npm run pb:schema`
 5. Create/update the first PocketBase admin: `npm run pb:bootstrap-admin`
 6. Seed a fresh PocketBase instance from the JSON content: `npm run pb:seed`
-7. Or import an existing legacy SQLite file with `SQLITE_IMPORT_URL` set: `npm run pb:import`
-8. Start the app: `npm run dev`
+7. Start the app: `npm run dev`
 
 ## Admin
 - `/admin/login`
@@ -24,5 +23,3 @@
 - PocketBase schema apply: `npm run pb:schema`
 - PocketBase bootstrap admin: `npm run pb:bootstrap-admin`
 - PocketBase JSON seed: `npm run pb:seed`
-- Legacy SQLite -> PocketBase import: `npm run pb:import`
-- Full cutover sequence: `npm run migrate:cutover`
