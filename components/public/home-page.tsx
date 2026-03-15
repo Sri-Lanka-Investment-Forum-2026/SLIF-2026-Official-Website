@@ -297,11 +297,11 @@ export async function HomePageContent() {
 
           <div className="container" data-aos="fade-up" data-aos-delay="100">
             {speakerContent.sessions.length ? (
-              speakerContent.sessions.map((session, index) => (
+              speakerContent.sessions.map((session: any, index: number) => (
                 <div key={session.id} className={index === speakerContent.sessions.length - 1 ? "" : "mb-5"}>
                   <h3 className="h4 mb-4">{session.name}</h3>
                   <div className="row g-4">
-                    {session.speakers.map((speaker) => (
+                    {session.speakers.map((speaker: any) => (
                       <div key={speaker.id} className="col-lg-3 col-md-6">
                         <div className="speaker-card h-100">
                           <div className="speaker-image">

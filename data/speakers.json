@@ -53,11 +53,11 @@
           "alt": "Dr Harshana Sooriyapperuma"
         },
         {
-          "name": "Dr P. Nandalal Weerasinghe",
+          "name": "Dr P Nandalal Weerasinghe",
           "title": "Governor",
           "company": "Central Bank of Sri Lanka",
           "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/nandalal-weerasinghe.png",
-          "alt": "Dr P. Nandalal Weerasinghe"
+          "alt": "Dr P Nandalal Weerasinghe"
         },
         {
           "name": "Duminda Hulangamuwa",
@@ -71,6 +71,20 @@
           "company": "Information and Communication Technology Agency (ICTA) of Sri Lanka",
           "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/hans-wijesuriya.png",
           "alt": "Dr Hans Wijesuriya"
+        },
+        {
+          "name": "Joy Priya Somasundram",
+          "title": "Principal and Head of Consulting",
+          "company": "FT Locations, The Financial Times",
+          "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/priya-somasundram.png",
+          "alt": "Joy Priya Somasundram"
+        },
+        {
+          "name": "Subhashini Abeysinghe",
+          "title": "Moderator",
+          "company": "Research Director, Verite Research",
+          "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/subhashini-abeysinghe.png",
+          "alt": "Subhashini Abeysinghe"
         }
       ]
     },
@@ -92,13 +106,6 @@
           "alt": "Mangala Wijesinghe"
         },
         {
-          "name": "Krishnakumar Thirumalai",
-          "title": "Chief Executive Officer",
-          "company": "Reliance Consumer Products Ltd",
-          "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/krishnakumar-thirumalai.png",
-          "alt": "Krishnakumar Thirumalai"
-        },
-        {
           "name": "Matt McCollough",
           "title": "Vice President Sales & Marketing",
           "company": "Shield Restraint Systems",
@@ -111,6 +118,13 @@
           "company": "Ceylon Chamber of Commerce",
           "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/krishan-balendran.png",
           "alt": "Krishan Balendran"
+        },
+        {
+          "name": "Nisthar Cassim",
+          "title": "Moderator",
+          "company": "Founding Editor and CEO of Daily FT",
+          "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/nisthar-cassim.png",
+          "alt": "Nisthar Cassim"
         }
       ]
     },
@@ -130,6 +144,13 @@
           "company": "Expertise France",
           "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/morgan-rohel.png",
           "alt": "Morgan Rohel"
+        },
+        {
+          "name": "Namita Vikas",
+          "title": "Moderator and Commentator",
+          "company": "Expertise France",
+          "image": "https://media.srilankainvestmentforum.com/slifmedia/images/speakers/namita-vikas.png",
+          "alt": "Namita Vikas"
         }
       ]
     }

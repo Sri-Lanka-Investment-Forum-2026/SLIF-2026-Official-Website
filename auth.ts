@@ -1,93 +1,42 @@
-import bcrypt from "bcryptjs";
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import { redirect } from "next/navigation";
 
-import { env } from "@/lib/env";
-import { prisma } from "@/lib/prisma";
-import { loginSchema } from "@/lib/validation";
+import type { AdminSession } from "@/lib/admin-session";
+import { getPocketBaseAdminSession, signInWithPocketBase, signOutFromPocketBase } from "@/lib/pocketbase";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  trustHost: true,
-  secret: env.authSecret,
-  session: {
-    strategy: "jwt",
-  },
-  pages: {
-    signIn: "/admin/login",
-  },
-  providers: [
-    Credentials({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      authorize: async (rawCredentials) => {
-        const parsed = loginSchema.safeParse(rawCredentials);
+type SignInOptions = {
+  email: string;
+  password: string;
+  redirectTo?: string;
+};
 
-        if (!parsed.success) {
-          return null;
-        }
+type SignOutOptions = {
+  redirectTo?: string;
+};
 
-        const user = await prisma.adminUser.findUnique({
-          where: {
-            email: parsed.data.email.toLowerCase(),
-          },
-        });
+const notFoundHandler = async () => new Response("Not Found", { status: 404 });
 
-        if (!user || !user.active) {
-          return null;
-        }
+export const handlers = { GET: notFoundHandler, POST: notFoundHandler };
 
-        const matches = await bcrypt.compare(parsed.data.password, user.passwordHash);
+export async function auth(): Promise<AdminSession | null> {
+  return getPocketBaseAdminSession();
+}
 
-        if (!matches) {
-          return null;
-        }
+export async function signIn(provider: string, options: SignInOptions) {
+  if (provider !== "credentials") {
+    throw new Error(`Unsupported provider: ${provider}`);
+  }
 
-        await prisma.adminUser.update({
-          where: {
-            id: user.id,
-          },
-          data: {
-            lastLoginAt: new Date(),
-          },
-        });
+  await signInWithPocketBase(options.email, options.password);
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name ?? user.email,
-        };
-      },
-    }),
-  ],
-  callbacks: {
-    authorized({ auth: session, request }: any) {
-      const { pathname } = request.nextUrl;
+  if (options.redirectTo) {
+    redirect(options.redirectTo as any);
+  }
+}
 
-      if (!pathname.startsWith("/admin")) {
-        return true;
-      }
+export async function signOut(options?: SignOutOptions) {
+  await signOutFromPocketBase();
 
-      if (pathname === "/admin/login") {
-        return true;
-      }
-
-      return Boolean(session?.user);
-    },
-    jwt({ token, user }: any) {
-      if (user) {
-        token.sub = user.id;
-      }
-
-      return token;
-    },
-    session({ session, token }: any) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-      }
-
-      return session;
-    },
-  },
-});
+  if (options?.redirectTo) {
+    redirect(options.redirectTo as any);
+  }
+}

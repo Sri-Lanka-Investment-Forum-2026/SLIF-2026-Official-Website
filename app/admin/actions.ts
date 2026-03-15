@@ -2,8 +2,8 @@
 import { revalidatePath } from "next/cache";
 
 import { signIn, signOut } from "@/auth";
+import { dataRepository } from "@/lib/data/repository";
 import { registerMediaUrl } from "@/lib/media";
-import { prisma } from "@/lib/prisma";
 import {
   loginSchema,
   projectInputSchema,
@@ -14,11 +14,6 @@ import {
   type SpeakerSettingsInput,
 } from "@/lib/validation";
 import { requireAdmin } from "@/lib/auth-utils";
-
-const asNullable = (value?: string | null) => {
-  const normalized = value?.trim();
-  return normalized ? normalized : null;
-};
 
 const normalizeStringList = (values: string[]) => values.map((value) => value.trim()).filter(Boolean);
 
@@ -108,101 +103,7 @@ export async function saveSectorAction(input: SectorInput) {
     registerMediaUrl(parsed.reportLink),
   ]);
 
-  const sectorId = await prisma.$transaction(async (tx) => {
-    if (parsed.id) {
-      await tx.sectorOverviewParagraph.deleteMany({ where: { sectorId: parsed.id } });
-      await tx.sectorStat.deleteMany({ where: { sectorId: parsed.id } });
-      await tx.sectorWhyInvest.deleteMany({ where: { sectorId: parsed.id } });
-      await tx.sectorAdvantage.deleteMany({ where: { sectorId: parsed.id } });
-
-      const updated = await tx.sector.update({
-        where: { id: parsed.id },
-        data: {
-          slug: parsed.slug,
-          sortOrder: parsed.sortOrder,
-          published: parsed.published,
-          name: parsed.name,
-          tagline: asNullable(parsed.tagline),
-          heroImageUrl: asNullable(parsed.heroImageUrl),
-          imageUrl: asNullable(parsed.imageUrl),
-          seoTitle: asNullable(parsed.seoTitle),
-          seoDescription: asNullable(parsed.seoDescription),
-          ctaTitle: asNullable(parsed.ctaTitle),
-          ctaDescription: asNullable(parsed.ctaDescription),
-          officerName: asNullable(parsed.officerName),
-          officerTitle: asNullable(parsed.officerTitle),
-          officerSpecialization: asNullable(parsed.officerSpecialization),
-          officerPhone: asNullable(parsed.officerPhone),
-          officerEmail: asNullable(parsed.officerEmail),
-          officerImageUrl: asNullable(parsed.officerImageUrl),
-          consultationLink: asNullable(parsed.consultationLink),
-          reportLink: asNullable(parsed.reportLink),
-          officerDescription: asNullable(parsed.officerDescription),
-          overviewParagraphs: {
-            create: parsed.overviewParagraphs.map((value, index) => ({ value, sortOrder: index })),
-          },
-          stats: {
-            create: parsed.stats.map((item, index) => ({
-              label: item.label,
-              value: item.value,
-              sortOrder: index,
-            })),
-          },
-          whyInvestItems: {
-            create: parsed.whyInvestItems.map((value, index) => ({ value, sortOrder: index })),
-          },
-          advantages: {
-            create: parsed.advantages.map((value, index) => ({ value, sortOrder: index })),
-          },
-        },
-      });
-
-      return updated.id;
-    }
-
-    const created = await tx.sector.create({
-      data: {
-        slug: parsed.slug,
-        sortOrder: parsed.sortOrder,
-        published: parsed.published,
-        name: parsed.name,
-        tagline: asNullable(parsed.tagline),
-        heroImageUrl: asNullable(parsed.heroImageUrl),
-        imageUrl: asNullable(parsed.imageUrl),
-        seoTitle: asNullable(parsed.seoTitle),
-        seoDescription: asNullable(parsed.seoDescription),
-        ctaTitle: asNullable(parsed.ctaTitle),
-        ctaDescription: asNullable(parsed.ctaDescription),
-        officerName: asNullable(parsed.officerName),
-        officerTitle: asNullable(parsed.officerTitle),
-        officerSpecialization: asNullable(parsed.officerSpecialization),
-        officerPhone: asNullable(parsed.officerPhone),
-        officerEmail: asNullable(parsed.officerEmail),
-        officerImageUrl: asNullable(parsed.officerImageUrl),
-        consultationLink: asNullable(parsed.consultationLink),
-        reportLink: asNullable(parsed.reportLink),
-        officerDescription: asNullable(parsed.officerDescription),
-        overviewParagraphs: {
-          create: parsed.overviewParagraphs.map((value, index) => ({ value, sortOrder: index })),
-        },
-        stats: {
-          create: parsed.stats.map((item, index) => ({
-            label: item.label,
-            value: item.value,
-            sortOrder: index,
-          })),
-        },
-        whyInvestItems: {
-          create: parsed.whyInvestItems.map((value, index) => ({ value, sortOrder: index })),
-        },
-        advantages: {
-          create: parsed.advantages.map((value, index) => ({ value, sortOrder: index })),
-        },
-      },
-    });
-
-    return created.id;
-  });
+  const { id: sectorId } = await dataRepository.saveSector(parsed);
 
   revalidatePublic("/", "/sectors", `/sectors/${parsed.slug}`, "/admin", "/admin/sectors");
 
@@ -211,7 +112,7 @@ export async function saveSectorAction(input: SectorInput) {
 
 export async function deleteSectorAction(id: string) {
   await requireAdmin();
-  await prisma.sector.delete({ where: { id } });
+  await dataRepository.deleteSector(id);
   revalidatePublic("/", "/sectors", "/admin", "/admin/sectors");
 }
 
@@ -233,108 +134,11 @@ export async function saveProjectAction(input: ProjectInput) {
     registerMediaUrl(parsed.heroVideoUrl),
   ]);
 
-  const sector = await prisma.sector.findUniqueOrThrow({
-    where: {
-      id: parsed.sectorId,
-    },
-    select: {
-      slug: true,
-    },
-  });
-
-  const projectId = await prisma.$transaction(async (tx) => {
-    if (parsed.id) {
-      await tx.projectMedia.deleteMany({ where: { projectId: parsed.id } });
-      await tx.projectStat.deleteMany({ where: { projectId: parsed.id } });
-      await tx.projectHighlight.deleteMany({ where: { projectId: parsed.id } });
-      await tx.projectFinancialItem.deleteMany({ where: { projectId: parsed.id } });
-
-      const updated = await tx.project.update({
-        where: { id: parsed.id },
-        data: {
-          legacyId: parsed.legacyId,
-          slug: parsed.slug,
-          sectorId: parsed.sectorId,
-          sortOrder: parsed.sortOrder,
-          published: parsed.published,
-          type: asNullable(parsed.type),
-          title: parsed.title,
-          subTitle: asNullable(parsed.subTitle),
-          description: asNullable(parsed.description),
-          brochureUrl: asNullable(parsed.brochureUrl),
-          moreInfoUrl: asNullable(parsed.moreInfoUrl),
-          videoUrl: asNullable(parsed.videoUrl),
-          heroVideoUrl: asNullable(parsed.heroVideoUrl),
-          media: {
-            create: parsed.media.map((item, index) => ({
-              url: item.url,
-              altText: asNullable(item.altText),
-              sortOrder: index,
-            })),
-          },
-          stats: {
-            create: parsed.stats.map((item, index) => ({
-              label: item.label,
-              value: item.value,
-              sortOrder: index,
-            })),
-          },
-          highlights: {
-            create: parsed.highlights.map((value, index) => ({ value, sortOrder: index })),
-          },
-          financialItems: {
-            create: parsed.financialItems.map((value, index) => ({ value, sortOrder: index })),
-          },
-        },
-      });
-
-      return updated.id;
-    }
-
-    const created = await tx.project.create({
-      data: {
-        legacyId: parsed.legacyId,
-        slug: parsed.slug,
-        sectorId: parsed.sectorId,
-        sortOrder: parsed.sortOrder,
-        published: parsed.published,
-        type: asNullable(parsed.type),
-        title: parsed.title,
-        subTitle: asNullable(parsed.subTitle),
-        description: asNullable(parsed.description),
-        brochureUrl: asNullable(parsed.brochureUrl),
-        moreInfoUrl: asNullable(parsed.moreInfoUrl),
-        videoUrl: asNullable(parsed.videoUrl),
-        heroVideoUrl: asNullable(parsed.heroVideoUrl),
-        media: {
-          create: parsed.media.map((item, index) => ({
-            url: item.url,
-            altText: asNullable(item.altText),
-            sortOrder: index,
-          })),
-        },
-        stats: {
-          create: parsed.stats.map((item, index) => ({
-            label: item.label,
-            value: item.value,
-            sortOrder: index,
-          })),
-        },
-        highlights: {
-          create: parsed.highlights.map((value, index) => ({ value, sortOrder: index })),
-        },
-        financialItems: {
-          create: parsed.financialItems.map((value, index) => ({ value, sortOrder: index })),
-        },
-      },
-    });
-
-    return created.id;
-  });
+  const { id: projectId, sectorSlug } = await dataRepository.saveProject(parsed);
 
   revalidatePublic(
     "/sectors",
-    `/sectors/${sector.slug}`,
+    `/sectors/${sectorSlug}`,
     `/projects/${parsed.slug}`,
     "/admin",
     "/admin/projects",
@@ -345,7 +149,7 @@ export async function saveProjectAction(input: ProjectInput) {
 
 export async function deleteProjectAction(id: string) {
   await requireAdmin();
-  await prisma.project.delete({ where: { id } });
+  await dataRepository.deleteProject(id);
   revalidatePublic("/sectors", "/admin", "/admin/projects");
 }
 
@@ -368,48 +172,7 @@ export async function saveSpeakerSettingsAction(input: SpeakerSettingsInput) {
     ),
   );
 
-  await prisma.$transaction(async (tx) => {
-    await tx.speaker.deleteMany();
-    await tx.speakerSession.deleteMany();
-
-    await tx.speakerSectionSettings.upsert({
-      where: {
-        id: "singleton",
-      },
-      update: {
-        title: parsed.title,
-        subtitle: asNullable(parsed.subtitle),
-      },
-      create: {
-        id: "singleton",
-        title: parsed.title,
-        subtitle: asNullable(parsed.subtitle),
-      },
-    });
-
-    for (const [sessionIndex, session] of parsed.sessions.entries()) {
-      const createdSession = await tx.speakerSession.create({
-        data: {
-          name: session.name,
-          sortOrder: sessionIndex,
-        },
-      });
-
-      for (const [speakerIndex, speaker] of session.speakers.entries()) {
-        await tx.speaker.create({
-          data: {
-            sessionId: createdSession.id,
-            name: speaker.name.trim(),
-            title: asNullable(speaker.title),
-            company: asNullable(speaker.company),
-            imageUrl: asNullable(speaker.imageUrl),
-            alt: asNullable(speaker.alt),
-            sortOrder: speakerIndex,
-          },
-        });
-      }
-    }
-  });
+  await dataRepository.saveSpeakerSettings(parsed);
 
   revalidatePublic("/", "/admin", "/admin/speakers");
 

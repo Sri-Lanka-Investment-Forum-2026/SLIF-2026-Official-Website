@@ -1,11 +1,7 @@
-import { prisma } from "@/lib/prisma";
+import { dataRepository } from "@/lib/data/repository";
 
 const main = async () => {
-  const assets = await prisma.mediaAsset.findMany({
-    orderBy: {
-      createdAt: "asc",
-    },
-  });
+  const assets = await dataRepository.listMediaAssets();
 
   let missing = 0;
 
@@ -32,7 +28,4 @@ main()
   .catch((error) => {
     console.error(error);
     process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
   });

@@ -73,7 +73,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
 
           <section className="container slif-stats-wrapper">
             <div className="row g-4 justify-content-center">
-              {sector.stats.map((stat, index) => (
+              {sector.stats.map((stat: any, index: number) => (
                 <div key={stat.id} className="col-5 col-lg-3">
                   <article className="slif-stat-card h-100 fade-in-up">
                     <span className="slif-card-icon-box" aria-hidden="true">
@@ -93,7 +93,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                 <div className="col-lg-6">
                   <h2 className="section-title mb-4">Sector Overview</h2>
                   <div className="text-muted">
-                    {sector.overviewParagraphs.map((item) => (
+                    {sector.overviewParagraphs.map((item: any) => (
                       <p key={item.id}>{item.value}</p>
                     ))}
                   </div>
@@ -115,7 +115,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
             <section className="slif-section-modern">
               <h2 className="section-title mb-4">Why Invest</h2>
               <div className="slif-bullet-grid">
-                {sector.whyInvestItems.map((item, index) => (
+                {sector.whyInvestItems.map((item: any, index: number) => (
                   <article className="slif-bullet-card fade-in-up" key={item.id}>
                     <span className="slif-card-icon-box" aria-hidden="true">
                       <i className={`bi ${cardIcons[index % cardIcons.length]}`} />
@@ -141,7 +141,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
             <section className="slif-section-modern">
               <h2 className="section-title mb-4">Strategic Advantages</h2>
               <div className="row g-4">
-                {sector.advantages.map((item, index) => (
+                {sector.advantages.map((item: any, index: number) => (
                   <div className="col-12 col-md-6 col-lg-4" key={item.id}>
                     <article className="slif-adv-card h-100 fade-in-up">
                       <span className="slif-card-icon-box" aria-hidden="true">

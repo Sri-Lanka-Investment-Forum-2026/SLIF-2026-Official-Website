@@ -9,14 +9,15 @@ const requiredInProduction = (value: string | undefined, key: string) => {
   return value;
 };
 
-const defaultDatabasePath = path.resolve(process.cwd(), "prisma", "dev.db");
-const defaultDatabaseUrl = `file:${defaultDatabasePath}`;
+const defaultSqliteImportPath = path.resolve(process.cwd(), "prisma", "dev.db");
+const defaultSqliteImportUrl = `file:${defaultSqliteImportPath}`;
+const defaultPocketBaseUrl = "http://127.0.0.1:8090";
 
 const normalizeSqliteDatabaseUrl = (value: string | undefined) => {
   const rawValue = value?.trim();
 
   if (!rawValue) {
-    return defaultDatabaseUrl;
+    return defaultSqliteImportUrl;
   }
 
   if (!rawValue.startsWith("file:")) {
@@ -26,7 +27,7 @@ const normalizeSqliteDatabaseUrl = (value: string | undefined) => {
   const databasePath = rawValue.slice("file:".length);
 
   if (!databasePath) {
-    return defaultDatabaseUrl;
+    return defaultSqliteImportUrl;
   }
 
   const resolvedCandidates = path.isAbsolute(databasePath)
@@ -43,8 +44,10 @@ const normalizeSqliteDatabaseUrl = (value: string | undefined) => {
 };
 
 export const env = {
-  databaseUrl: normalizeSqliteDatabaseUrl(process.env.DATABASE_URL),
-  authSecret: requiredInProduction(process.env.AUTH_SECRET, "AUTH_SECRET") ?? "development-secret",
+  sqliteImportUrl: normalizeSqliteDatabaseUrl(process.env.SQLITE_IMPORT_URL),
+  pocketbaseUrl: process.env.POCKETBASE_URL ?? defaultPocketBaseUrl,
+  pocketbaseSuperuserEmail: process.env.POCKETBASE_SUPERUSER_EMAIL,
+  pocketbaseSuperuserPassword: process.env.POCKETBASE_SUPERUSER_PASSWORD,
   mediaPublicBaseUrl:
     process.env.MEDIA_PUBLIC_BASE_URL ?? "https://media.srilankainvestmentforum.com",
   minioEndpoint: process.env.MINIO_ENDPOINT,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { prisma } from "@/lib/prisma";
+import { dataRepository } from "@/lib/data/repository";
 
 export async function GET(request: NextRequest) {
   const sectorSlug = request.nextUrl.searchParams.get("sector")?.toLowerCase();
@@ -9,14 +9,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/sectors", request.url), 308);
   }
 
-  const sector = await prisma.sector.findUnique({
-    where: {
-      slug: sectorSlug,
-    },
-    select: {
-      slug: true,
-    },
-  });
+  const sector = await dataRepository.findSectorBySlugAny(sectorSlug);
 
   return NextResponse.redirect(
     new URL(sector ? `/sectors/${sector.slug}` : "/sectors", request.url),

@@ -411,7 +411,7 @@
       "subTitle": "Empowering global trade from the heart of the Indian Ocean",
       "description": "The West Container Terminal II (WCT-II) at the Port of Colombo is a landmark public-private partnership (PPP) project that underscores Sri Lanka’s commitment to expanding its maritime and logistics capabilities. The project is set to significantly enhance the port’s capacity and operational efficiency, strengthening its role in global shipping networks and regional trade. As one of the most ambitious developments within Colombo Port’s expansion program, WCT-II offers investors a strategic opportunity to participate in a long-term infrastructure partnership that reinforces Sri Lanka’s position as a vital link in international maritime connectivity.",
       "images": [
-        "https://media.srilankainvestmentforum.com/slifmedia/images/ProjectImage/west-container-terminal-ii.jpg"
+        "https://media.srilankainvestmentforum.com/slifmedia/images/ProjectImage/Aviation.webp"
       ],
       "video": "",
       "stats": [
@@ -429,32 +429,29 @@
       "moreInfo": "#"
     },
     {
-      "id": "avi-002",
-      "type": "flagship",
-      "title": "Aircraft MRO Facility - Mattala International Airport",
-      "subTitle": "Where Public Vision Meets Private Aviation Expertise",
-      "description": "The Mattala Aircraft Maintenance, Repair and Overhaul (MRO) facility is a government-backed initiative designed to position Sri Lanka as a competitive regional hub for aviation maintenance services. Located at Mattala International Airport in Southern Sri Lanka, the project will support both narrow-body and wide-body aircraft maintenance operations across a land area exceeding 66 acres. Developed through a Public–Private Partnership (PPP) framework and supported by BOI incentives, the project offers investors a long-term opportunity to serve the fast-growing Asia-Pacific aviation market while delivering sustainable returns.",
-      "images": [
-        "https://media.srilankainvestmentforum.com/slifmedia/images/ProjectImage/MROFacilityMRIA.webp"
-      ],
-      "video": "",
-      "stats": [
-        { "label": "Location", "value": "Mattala International Airport" },
-        { "label": "Land Area", "value": "66+ Acres" },
-        {
-          "label": "Project Model",
-          "value": "Public–Private Partnership (PPP)"
-        }
-      ],
-      "keyHighlights": [
-        "Aircraft maintenance hub for narrow- and wide-body aircraft",
-        "Strategic location connecting Southeast Asia, Middle East and Australia",
-        "Government-backed project with BOI investment incentives",
-        "Opportunity to serve high-growth Asia-Pacific region"
-      ],
-      "brochure": "https://media.srilankainvestmentforum.com/slifmedia/pdfs/MRO-MRIA.pdf",
-      "moreInfo": "#"
-    }
+  "id": "avi-002",
+  "type": "flagship",
+  "title": "Aircraft MRO Facility - Mattala International Airport",
+  "subTitle": "Where Public Vision Meets Private Aviation Expertise",
+  "description": "The Mattala Aircraft Maintenance, Repair and Overhaul (MRO) facility is a government-backed initiative designed to position Sri Lanka as a competitive regional hub for aviation maintenance services. Located at Mattala International Airport in Southern Sri Lanka, the project will support both narrow-body and wide-body aircraft maintenance operations across a land area exceeding 66 acres. Developed through a Public–Private Partnership (PPP) framework and supported by BOI incentives, the project offers investors a long-term opportunity to serve the fast-growing Asia-Pacific aviation market while delivering sustainable returns.",
+  "images": [
+    "https://media.srilankainvestmentforum.com/slifmedia/images/ProjectImage/MROFacilityMRIA.webp"
+  ],
+  "video": "",
+  "stats": [
+    { "label": "Location", "value": "Mattala International Airport" },
+    { "label": "Land Area", "value": "66+ Acres" },
+    { "label": "Project Model", "value": "Public–Private Partnership (PPP)" }
+  ],
+  "keyHighlights": [
+    "Aircraft maintenance hub for narrow- and wide-body aircraft",
+    "Strategic location connecting Southeast Asia, Middle East and Australia",
+    "Government-backed project with BOI investment incentives",
+    "Opportunity to serve high-growth Asia-Pacific region"
+  ],
+  "brochure": "https://media.srilankainvestmentforum.com/slifmedia/pdfs/MRO-MRIA.pdf",
+  "moreInfo": "#"
+}
   ],
 
   "manufacturing": [

@@ -74,7 +74,7 @@ export default async function SectorsPage() {
           <div className="container" data-aos="fade-up">
             <div className="row g-4">
               {sectors.map((sector) => {
-                const baseStats = sector.stats.slice(0, 4).map((stat) => ({
+                const baseStats = sector.stats.slice(0, 4).map((stat: any) => ({
                   id: stat.id,
                   label: stat.label,
                   value: stat.value,
@@ -107,7 +107,7 @@ export default async function SectorsPage() {
                         <div className="card-body sector-body">
                           <p className="sector-tagline">{sector.tagline ?? overviewText}</p>
                           <div className="sector-stats">
-                            {baseStats.slice(0, 4).map((stat) => (
+                            {baseStats.slice(0, 4).map((stat: any) => (
                               <div className="sector-stat" key={stat.id}>
                                 <span className="sector-stat-label">{stat.label}</span>
                                 <span className="sector-stat-value">{stat.value}</span>

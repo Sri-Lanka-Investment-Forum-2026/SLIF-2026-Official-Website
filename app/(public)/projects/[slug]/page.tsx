@@ -81,7 +81,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                 <section className="mb-4">
                   <h2 className="h4 mb-3">Investment Highlights</h2>
                   <ul className="slif-detail-list">
-                    {project.highlights.map((item) => (
+                    {project.highlights.map((item: any) => (
                       <li key={item.id}>{item.value}</li>
                     ))}
                   </ul>
@@ -91,7 +91,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   <section className="mb-4">
                     <h2 className="h4 mb-3">Financial Snapshot</h2>
                     <ul className="slif-detail-list">
-                      {project.financialItems.map((item) => (
+                      {project.financialItems.map((item: any) => (
                         <li key={item.id}>{item.value}</li>
                       ))}
                     </ul>
@@ -102,7 +102,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   <section className="mb-4">
                     <h2 className="h4 mb-3">Project Media</h2>
                     <div className="row g-3">
-                      {project.media.map((item) => (
+                      {project.media.map((item: any) => (
                         <div key={item.id} className="col-6 col-lg-4">
                           <img
                             src={item.url}
@@ -121,7 +121,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                 <aside className="slif-investment-panel">
                   <h2 className="h5 mb-3">Quick Facts</h2>
                   <div className="row g-3">
-                    {project.stats.slice(0, 4).map((fact) => (
+                    {project.stats.slice(0, 4).map((fact: any) => (
                       <div className="col-6 col-lg-12" key={fact.id}>
                         <article className="slif-fact-card">
                           <p className="small text-muted mb-1">{fact.label}</p>
