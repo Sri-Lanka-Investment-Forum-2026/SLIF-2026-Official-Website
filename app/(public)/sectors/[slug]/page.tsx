@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { SectorProjectShowcase } from "@/components/public/sector-project-showcase";
 import { getSectorBySlug } from "@/lib/content";
+import { env } from "@/lib/env";
 import { hasUsableHref, isAbsoluteUrl } from "@/lib/utils";
 
 type SectorDetailPageProps = {
@@ -11,6 +12,10 @@ type SectorDetailPageProps = {
 };
 
 export async function generateMetadata({ params }: SectorDetailPageProps): Promise<Metadata> {
+  if (!env.sectorsPagePublished) {
+    return {};
+  }
+
   const { slug } = await params;
   const sector = await getSectorBySlug(slug);
 
@@ -34,6 +39,10 @@ const cardIcons = [
 ];
 
 export default async function SectorDetailPage({ params }: SectorDetailPageProps) {
+  if (!env.sectorsPagePublished) {
+    notFound();
+  }
+
   const { slug } = await params;
   const sector = await getSectorBySlug(slug);
 

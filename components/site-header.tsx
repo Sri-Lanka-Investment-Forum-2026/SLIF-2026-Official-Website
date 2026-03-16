@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { env } from "@/lib/env";
+
 export function SiteHeader() {
   return (
     <header id="header" className="header d-flex align-items-center fixed-top">
@@ -21,9 +23,11 @@ export function SiteHeader() {
             <li>
               <Link href="/venue">Venue</Link>
             </li>
-            <li>
-              <Link href="/sectors">Ready to Invest</Link>
-            </li>
+            {env.sectorsPagePublished ? (
+              <li>
+                <Link href="/sectors">Ready to Invest</Link>
+              </li>
+            ) : null}
             <li>
               <Link href="/contact">Contact</Link>
             </li>

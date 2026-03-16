@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 import { getProjectBySlugOrLegacyId } from "@/lib/content";
+import { env } from "@/lib/env";
 import { hasRenderableBrochure } from "@/lib/utils";
 
 type ProjectDetailPageProps = {
@@ -144,9 +145,11 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                     <Link className="btn btn-outline-primary" href="/contact">
                       Contact Investment Team
                     </Link>
-                    <Link className="btn btn-link" href={`/sectors/${project.sector.slug}`}>
-                      Back to {project.sector.name}
-                    </Link>
+                    {env.sectorsPagePublished ? (
+                      <Link className="btn btn-link" href={`/sectors/${project.sector.slug}`}>
+                        Back to {project.sector.name}
+                      </Link>
+                    ) : null}
                   </div>
                 </aside>
               </div>

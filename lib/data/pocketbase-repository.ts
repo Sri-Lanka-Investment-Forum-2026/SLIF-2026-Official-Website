@@ -73,6 +73,11 @@ const uniqueIds = (records: any[]) => [...new Set(records.map((record) => record
 
 const createIdMap = (records: any[]) => new Map(records.map((record) => [record.id, record]));
 
+const quoteFilterValue = (value: string) => `"${value.replace(/"/g, '\\"')}"`;
+
+const buildRelationOrFilter = (field: string, ids: string[]) =>
+  ids.map((id) => `${field} = ${quoteFilterValue(id)}`).join(" || ");
+
 async function getFullList(pb: PocketBase, collection: string, options: Record<string, unknown> = {}) {
   return pb.collection(collection).getFullList({
     requestKey: null,
@@ -90,8 +95,7 @@ async function getSectorChildren(pb: PocketBase, sectorIds: string[]) {
     };
   }
 
-  const joined = sectorIds.map((id) => `"${id}"`).join(",");
-  const filter = `sector ?~ [${joined}]`;
+  const filter = buildRelationOrFilter("sector", sectorIds);
 
   const [overviewParagraphs, stats, whyInvestItems, advantages] = await Promise.all([
     getFullList(pb, "sector_overview_paragraphs", { filter, sort: "sortOrder" }),
@@ -127,8 +131,7 @@ async function getProjectChildren(pb: PocketBase, projectIds: string[]) {
     };
   }
 
-  const joined = projectIds.map((id) => `"${id}"`).join(",");
-  const filter = `project ?~ [${joined}]`;
+  const filter = buildRelationOrFilter("project", projectIds);
 
   const [media, stats, highlights, financialItems] = await Promise.all([
     getFullList(pb, "project_media", { filter, sort: "sortOrder" }),
@@ -205,7 +208,7 @@ async function hydrateSectors(pb: PocketBase, sectors: any[], options?: { includ
   }
 
   const projects = await getFullList(pb, "projects", {
-    filter: `sector ?~ [${sectorIds.map((id) => `"${id}"`).join(",")}] && published = true`,
+    filter: `(${buildRelationOrFilter("sector", sectorIds)}) && published = true`,
     sort: "sortOrder",
   });
   const sectorMap = createIdMap(baseSectors);
