@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
+import { prepareUploadAsset } from "@/lib/image-upload";
 import { registerMediaUrl } from "@/lib/media";
 import { formatStorageError, uploadToMinio } from "@/lib/minio";
 import { normalizeUploadFolder, validateUploadFile } from "@/lib/upload-policy";
@@ -35,23 +36,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
+    const preparedFile = await prepareUploadAsset(file);
     const baseName = file.name.replace(/\.[^.]+$/, "");
-    const extension = file.name.includes(".") ? file.name.split(".").pop() : "";
+    const extension = preparedFile.extension;
     const key = `${folder.replace(/^\/+|\/+$/g, "")}/${Date.now()}-${slugify(baseName)}${
       extension ? `.${extension}` : ""
     }`;
-
-    const buffer = Buffer.from(await file.arrayBuffer());
     const url = await uploadToMinio({
-      body: buffer,
+      body: preparedFile.body,
       key,
-      contentType: file.type || "application/octet-stream",
+      contentType: preparedFile.contentType,
     });
 
     const asset = await registerMediaUrl(url, {
       altText,
-      mimeType: file.type,
-      size: file.size,
+      mimeType: preparedFile.contentType,
+      size: preparedFile.size,
     });
 
     return NextResponse.json({
