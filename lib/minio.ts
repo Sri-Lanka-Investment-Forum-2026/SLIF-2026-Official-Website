@@ -1,6 +1,7 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 import { env } from "@/lib/env";
+import { buildPublicMediaUrl } from "@/lib/media";
 
 let cachedClient: S3Client | null = null;
 
@@ -99,6 +100,15 @@ export const formatStorageError = (error: unknown) => {
     return "The MinIO TLS certificate could not be verified. Check the HTTPS certificate chain for MINIO_ENDPOINT.";
   }
 
+  if (
+    metadata?.httpStatusCode === 301 ||
+    metadata?.httpStatusCode === 302 ||
+    metadata?.httpStatusCode === 307 ||
+    metadata?.httpStatusCode === 308
+  ) {
+    return `MinIO redirected the upload request (HTTP ${metadata.httpStatusCode}). This usually means MINIO_ENDPOINT points to a public site or MinIO console URL instead of the S3 API endpoint. Use the S3/API origin for MINIO_ENDPOINT and keep MEDIA_PUBLIC_BASE_URL as the public file URL.`;
+  }
+
   if (metadata?.httpStatusCode) {
     const requestIdSuffix = metadata.requestId ? ` Request ID: ${metadata.requestId}.` : "";
     return `MinIO upload failed with HTTP ${metadata.httpStatusCode}.${requestIdSuffix}`;
@@ -124,6 +134,7 @@ export const getMinioClient = () => {
     region: env.minioRegion,
     endpoint: env.minioEndpoint,
     forcePathStyle: true,
+    disableHostPrefix: true,
     requestChecksumCalculation: "WHEN_REQUIRED",
     responseChecksumValidation: "WHEN_REQUIRED",
     credentials: {
@@ -156,5 +167,5 @@ export const uploadToMinio = async (params: {
     throw new Error(formatStorageError(error), { cause: error });
   }
 
-  return `${env.mediaPublicBaseUrl.replace(/\/$/, "")}/${params.key.replace(/^\/+/, "")}`;
+  return buildPublicMediaUrl(params.key);
 };

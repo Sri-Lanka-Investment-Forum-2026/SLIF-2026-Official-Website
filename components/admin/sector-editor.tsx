@@ -22,9 +22,26 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [overviewText, setOverviewText] = useState(initialValue.overviewParagraphs.join("\n"));
-  const [whyInvestText, setWhyInvestText] = useState(initialValue.whyInvestItems.join("\n"));
-  const [advantagesText, setAdvantagesText] = useState(initialValue.advantages.join("\n"));
+  const preservedSectorDetails = {
+    officerName: initialValue.officerName,
+    officerTitle: initialValue.officerTitle,
+    officerSpecialization: initialValue.officerSpecialization,
+    officerPhone: initialValue.officerPhone,
+    officerEmail: initialValue.officerEmail,
+    officerImageUrl: initialValue.officerImageUrl,
+    consultationLink: initialValue.consultationLink,
+    reportLink: initialValue.reportLink,
+    officerDescription: initialValue.officerDescription,
+  };
+  const [overviewText, setOverviewText] = useState(
+    initialValue.overviewParagraphs.join("\n"),
+  );
+  const [whyInvestText, setWhyInvestText] = useState(
+    initialValue.whyInvestItems.join("\n"),
+  );
+  const [advantagesText, setAdvantagesText] = useState(
+    initialValue.advantages.join("\n"),
+  );
 
   const form = useForm<SectorInput>({
     defaultValues: initialValue,
@@ -42,6 +59,7 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
       try {
         const result = await saveSectorAction({
           ...values,
+          ...preservedSectorDetails,
           overviewParagraphs: parseLines(overviewText),
           whyInvestItems: parseLines(whyInvestText),
           advantages: parseLines(advantagesText),
@@ -51,7 +69,9 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
         router.refresh();
       } catch (submissionError) {
         setError(
-          submissionError instanceof Error ? submissionError.message : "Unable to save sector.",
+          submissionError instanceof Error
+            ? submissionError.message
+            : "Unable to save sector.",
         );
       }
     });
@@ -74,11 +94,20 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
         </div>
         <div className="col-md-2">
           <label className="form-label">Sort order</label>
-          <input className="form-control" type="number" {...form.register("sortOrder", { valueAsNumber: true })} />
+          <input
+            className="form-control"
+            type="number"
+            {...form.register("sortOrder", { valueAsNumber: true })}
+          />
         </div>
         <div className="col-md-2 d-flex align-items-end">
           <div className="form-check mb-2">
-            <input className="form-check-input" type="checkbox" id="sector-published" {...form.register("published")} />
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="sector-published"
+              {...form.register("published")}
+            />
             <label className="form-check-label" htmlFor="sector-published">
               Published
             </label>
@@ -93,7 +122,9 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
             <MediaInput
               label="Hero image"
               value={form.watch("heroImageUrl") ?? ""}
-              onChange={(value) => form.setValue("heroImageUrl", value, { shouldDirty: true })}
+              onChange={(value) =>
+                form.setValue("heroImageUrl", value, { shouldDirty: true })
+              }
               folder="sectors"
               accept="image/*"
               preview="image"
@@ -103,7 +134,9 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
             <MediaInput
               label="Overview image"
               value={form.watch("imageUrl") ?? ""}
-              onChange={(value) => form.setValue("imageUrl", value, { shouldDirty: true })}
+              onChange={(value) =>
+                form.setValue("imageUrl", value, { shouldDirty: true })
+              }
               folder="sectors"
               accept="image/*"
               preview="image"
@@ -142,14 +175,24 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
                 <div className="row g-3 align-items-end">
                   <div className="col-md-5">
                     <label className="form-label">Label</label>
-                    <input className="form-control" {...form.register(`stats.${index}.label`)} />
+                    <input
+                      className="form-control"
+                      {...form.register(`stats.${index}.label`)}
+                    />
                   </div>
                   <div className="col-md-5">
                     <label className="form-label">Value</label>
-                    <input className="form-control" {...form.register(`stats.${index}.value`)} />
+                    <input
+                      className="form-control"
+                      {...form.register(`stats.${index}.value`)}
+                    />
                   </div>
                   <div className="col-md-2">
-                    <button type="button" className="btn btn-outline-danger w-100" onClick={() => stats.remove(index)}>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger w-100"
+                      onClick={() => stats.remove(index)}
+                    >
                       Remove
                     </button>
                   </div>
@@ -191,7 +234,10 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
           </div>
           <div className="col-md-6">
             <label className="form-label">SEO description</label>
-            <input className="form-control" {...form.register("seoDescription")} />
+            <input
+              className="form-control"
+              {...form.register("seoDescription")}
+            />
           </div>
           <div className="col-md-6">
             <label className="form-label">CTA title</label>
@@ -199,60 +245,10 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
           </div>
           <div className="col-md-6">
             <label className="form-label">CTA description</label>
-            <input className="form-control" {...form.register("ctaDescription")} />
-          </div>
-        </div>
-      </div>
-
-      <div className="admin-form-section">
-        <h2 className="h4 mb-3">Sector officer</h2>
-        <div className="row g-4">
-          <div className="col-md-6">
-            <label className="form-label">Officer name</label>
-            <input className="form-control" {...form.register("officerName")} />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Officer title</label>
-            <input className="form-control" {...form.register("officerTitle")} />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Specialization</label>
-            <input className="form-control" {...form.register("officerSpecialization")} />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">Phone</label>
-            <input className="form-control" {...form.register("officerPhone")} />
-          </div>
-          <div className="col-md-3">
-            <label className="form-label">Email</label>
-            <input className="form-control" {...form.register("officerEmail")} />
-          </div>
-          <div className="col-md-6">
-            <MediaInput
-              label="Officer image"
-              value={form.watch("officerImageUrl") ?? ""}
-              onChange={(value) => form.setValue("officerImageUrl", value, { shouldDirty: true })}
-              folder="sectors"
-              accept="image/*"
-              preview="image"
+            <input
+              className="form-control"
+              {...form.register("ctaDescription")}
             />
-          </div>
-          <div className="col-md-6">
-            <MediaInput
-              label="Sector report URL/PDF"
-              value={form.watch("reportLink") ?? ""}
-              onChange={(value) => form.setValue("reportLink", value, { shouldDirty: true })}
-              folder="reports"
-              accept="application/pdf,image/*"
-            />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label">Consultation link</label>
-            <input className="form-control" {...form.register("consultationLink")} />
-          </div>
-          <div className="col-12">
-            <label className="form-label">Officer description</label>
-            <textarea className="form-control" rows={4} {...form.register("officerDescription")} />
           </div>
         </div>
       </div>
@@ -260,7 +256,11 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
       {error ? <div className="alert alert-danger mt-4">{error}</div> : null}
 
       <div className="d-flex justify-content-end gap-3 mt-4">
-        <button className="btn btn-dark btn-lg" type="submit" disabled={isPending}>
+        <button
+          className="btn btn-dark btn-lg"
+          type="submit"
+          disabled={isPending}
+        >
           {isPending ? "Saving..." : "Save sector"}
         </button>
       </div>
