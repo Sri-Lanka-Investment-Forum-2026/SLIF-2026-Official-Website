@@ -5,6 +5,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "SLIF 2026",
   description: "Sri Lanka Investment Forum 2026",
+  icons: {
+    icon: "/assets/img/slif-logo.png",
+    shortcut: "/assets/img/slif-logo.png",
+    apple: "/assets/img/slif-logo.png",
+  },
 };
 
 export default function RootLayout({

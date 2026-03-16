@@ -182,11 +182,14 @@ h6 {
   padding: 10px 15px;
   background-color: transparent;
   border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .header .logo img {
-  max-height: 40px;
-  margin-right: 8px;
+  display: block;
+  max-height: 48px;
+  width: auto;
+  margin-right: 0;
 }
 
 .header .logo h1 {
