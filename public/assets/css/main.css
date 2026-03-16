@@ -171,7 +171,7 @@ h6 {
 .header .getstarted-text {
   margin: 0;
   font-family: var(--heading-font);
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 600;
   line-height: 1.2;
   color: var(--heading-color);
@@ -187,7 +187,7 @@ h6 {
 
 .header .logo img {
   display: block;
-  max-height: 48px;
+  max-height: 75px;
   width: auto;
   margin-right: 0;
 }
