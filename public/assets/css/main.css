@@ -1121,6 +1121,150 @@ section,
 }
 
 /*--------------------------------------------------------------
+# Offers Partner Section
+--------------------------------------------------------------*/
+.offers-partner-section {
+  padding-top: 0;
+}
+
+.offers-partner-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid rgba(44, 0, 248, 0.08);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(44, 0, 248, 0.08), transparent 32%),
+    linear-gradient(135deg, #ffffff 0%, #f4f7ff 100%);
+  box-shadow: 0 24px 60px rgba(20, 29, 61, 0.12);
+}
+
+.offers-partner-media {
+  min-height: 100%;
+}
+
+.offers-partner-media img {
+  width: 100%;
+  height: 100%;
+  min-height: 430px;
+  object-fit: cover;
+  display: block;
+}
+
+.offers-partner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 20px;
+  padding: 48px 46px;
+}
+
+.offers-partner-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: rgba(44, 0, 248, 0.08);
+  color: #1856b1;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.offers-partner-logo {
+  width: auto;
+  max-width: min(240px, 100%);
+  max-height: 68px;
+  display: block;
+}
+
+.offers-partner-content h3 {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 1.12;
+}
+
+.offers-partner-content p {
+  margin: 0;
+  font-size: 1.15rem;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--default-color), transparent 10%);
+}
+
+.offers-partner-button,
+.offers-partner-button:focus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 208px;
+  padding: 15px 28px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #3f1dff 0%, #2c00f8 100%);
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 16px 36px rgba(44, 0, 248, 0.22);
+}
+
+.offers-partner-button:hover,
+.offers-partner-button:focus:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 18px 40px rgba(44, 0, 248, 0.3);
+}
+
+@media (max-width: 991px) {
+  .offers-partner-card {
+    grid-template-columns: 1fr;
+  }
+
+  .offers-partner-media img {
+    min-height: 320px;
+  }
+
+  .offers-partner-content {
+    padding: 36px 28px;
+  }
+}
+
+@media (max-width: 575px) {
+  .offers-partner-card {
+    border-radius: 22px;
+  }
+
+  .offers-partner-media img {
+    min-height: 240px;
+  }
+
+  .offers-partner-content {
+    gap: 16px;
+    padding: 28px 20px;
+  }
+
+  .offers-partner-badge {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .offers-partner-content h3 {
+    font-size: 1.85rem;
+  }
+
+  .offers-partner-content p {
+    font-size: 1rem;
+  }
+
+  .offers-partner-button,
+  .offers-partner-button:focus {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+/*--------------------------------------------------------------
 # Hero Section
 --------------------------------------------------------------*/
 .hero {
