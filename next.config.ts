@@ -37,6 +37,8 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  poweredByHeader: false,
   typedRoutes: true,
   async headers() {
     return [
