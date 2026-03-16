@@ -4,13 +4,15 @@ import { notFound, redirect } from "next/navigation";
 
 import { getProjectBySlugOrLegacyId } from "@/lib/content";
 import { env } from "@/lib/env";
-import { hasRenderableBrochure } from "@/lib/utils";
+import { hasRenderableBrochure, toSafeMediaUrl } from "@/lib/utils";
 
 type ProjectDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({ params }: ProjectDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: ProjectDetailPageProps): Promise<Metadata> {
   const { slug } = await params;
   const project = await getProjectBySlugOrLegacyId(slug);
 
@@ -24,7 +26,9 @@ export async function generateMetadata({ params }: ProjectDetailPageProps): Prom
   };
 }
 
-export default async function ProjectDetailPage({ params }: ProjectDetailPageProps) {
+export default async function ProjectDetailPage({
+  params,
+}: ProjectDetailPageProps) {
   const { slug } = await params;
   const project = await getProjectBySlugOrLegacyId(slug);
 
@@ -36,7 +40,17 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     redirect(`/projects/${project.slug}`);
   }
 
-  const heroImage = project.media[0]?.url ?? project.sector.heroImageUrl ?? "/assets/img/herobg.png";
+  const heroImage = toSafeMediaUrl(
+    project.media[0]?.url ?? project.sector.heroImageUrl,
+    "/assets/img/herobg.png",
+  );
+  const heroVideoUrl = toSafeMediaUrl(
+    project.heroVideoUrl ?? project.videoUrl,
+    "",
+  );
+  const brochureUrl = hasRenderableBrochure(project.brochureUrl)
+    ? project.brochureUrl.trim()
+    : null;
 
   return (
     <div className="project-page">
@@ -44,7 +58,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         <div className="slif-project-page">
           <section className="slif-project-hero mb-4 mb-lg-5">
             <div className="slif-project-hero-media">
-              {project.heroVideoUrl || project.videoUrl ? (
+              {heroVideoUrl ? (
                 <video
                   className="slif-project-hero-media-item"
                   controls
@@ -52,7 +66,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                   poster={heroImage}
                   aria-label={`Video overview for ${project.title}`}
                 >
-                  <source src={project.heroVideoUrl ?? project.videoUrl ?? ""} />
+                  <source src={heroVideoUrl} />
                 </video>
               ) : (
                 <img
@@ -106,8 +120,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                       {project.media.map((item: any) => (
                         <div key={item.id} className="col-6 col-lg-4">
                           <img
-                            src={item.url}
-                            alt={item.altText?.trim() || `${project.title} media`}
+                            src={toSafeMediaUrl(item.url, heroImage)}
+                            alt={
+                              item.altText?.trim() || `${project.title} media`
+                            }
                             className="rounded-4 shadow-sm h-100 object-fit-cover"
                             loading="lazy"
                           />
@@ -132,21 +148,27 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
                     ))}
                   </div>
                   <div className="d-grid gap-2 mt-4">
-                    {hasRenderableBrochure(project.brochureUrl) ? (
+                    {brochureUrl ? (
                       <a
                         className="btn btn-primary"
-                        href={project.brochureUrl}
+                        href={brochureUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         Download Brochure
                       </a>
                     ) : null}
-                    <Link className="btn btn-outline-primary" href="/contact">
+                    <Link
+                      className="btn btn-outline-primary"
+                      href="mailto:readytoinvest@boi.lk?subject=Inquiry%20about%20investment%20opportunities%20in%20SLIF%20projects"
+                    >
                       Contact Investment Team
                     </Link>
                     {env.sectorsPagePublished ? (
-                      <Link className="btn btn-link" href={`/sectors/${project.sector.slug}`}>
+                      <Link
+                        className="btn btn-link"
+                        href={`/sectors/${project.sector.slug}`}
+                      >
                         Back to {project.sector.name}
                       </Link>
                     ) : null}

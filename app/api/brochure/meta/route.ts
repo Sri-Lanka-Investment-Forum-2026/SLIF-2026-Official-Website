@@ -4,9 +4,10 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { fetchBrochureBuffer } from "@/lib/brochure";
+import { fetchBrochureBuffer, getBrochureErrorResponse } from "@/lib/brochure";
 
 const execFileAsync = promisify(execFile);
+const PDF_INFO_TIMEOUT_MS = 10_000;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,7 +34,9 @@ export async function GET(request: Request) {
     const pdfPath = join(tempDir, "brochure.pdf");
     await writeFile(pdfPath, buffer);
 
-    const { stdout } = await execFileAsync("pdfinfo", [pdfPath]);
+    const { stdout } = await execFileAsync("pdfinfo", [pdfPath], {
+      timeout: PDF_INFO_TIMEOUT_MS,
+    });
     const pages = parsePageCount(stdout);
 
     return Response.json(
@@ -45,14 +48,7 @@ export async function GET(request: Request) {
       },
     );
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to inspect brochure.";
-    const status =
-      message === "Unsupported brochure origin."
-        ? 403
-        : message === "Unable to load brochure."
-          ? 502
-          : 500;
+    const { message, status } = getBrochureErrorResponse(error, 500);
 
     return Response.json({ error: message }, { status });
   } finally {

@@ -1,4 +1,5 @@
 import { createPocketBaseSuperuserClient, POCKETBASE_ADMIN_COLLECTION } from "@/lib/pocketbase";
+import { buildPocketBaseEqFilter } from "@/lib/pocketbase-filter";
 import { applyPocketBaseSchema } from "@/lib/pocketbase-schema";
 import { env } from "@/lib/env";
 
@@ -23,9 +24,11 @@ async function main() {
   let result: any;
 
   try {
-    const existing = await pb.collection(POCKETBASE_ADMIN_COLLECTION).getFirstListItem(`email = "${email}"`, {
-      requestKey: null,
-    });
+    const existing = await pb
+      .collection(POCKETBASE_ADMIN_COLLECTION)
+      .getFirstListItem(buildPocketBaseEqFilter("email", email), {
+        requestKey: null,
+      });
     result = await pb.collection(POCKETBASE_ADMIN_COLLECTION).update(existing.id, payload, {
       requestKey: null,
     });

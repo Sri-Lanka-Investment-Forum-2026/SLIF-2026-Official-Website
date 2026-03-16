@@ -1,7 +1,26 @@
 import { z } from "zod";
 
+import { isAbsoluteUrl, isSafeMediaUrl, isSafeNavigationHref } from "@/lib/utils";
+
 const requiredString = z.string().trim().min(1);
 const optionalString = z.string().trim().optional().or(z.literal(""));
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+const optionalSchemaWithValidation = (predicate: (value: string) => boolean, message: string) =>
+  optionalString.refine((value) => !value || predicate(value), { message });
+
+const optionalMediaUrl = optionalSchemaWithValidation(
+  isSafeMediaUrl,
+  "Enter a valid media URL starting with https://, http://, or /.",
+);
+const optionalNavigationUrl = optionalSchemaWithValidation(
+  isSafeNavigationHref,
+  "Enter a valid URL starting with https://, http://, or /.",
+);
+const optionalAbsoluteUrl = optionalSchemaWithValidation(
+  isAbsoluteUrl,
+  "Enter a valid absolute URL starting with https:// or http://.",
+);
 
 export const statItemSchema = z.object({
   label: optionalString.default(""),
@@ -10,13 +29,13 @@ export const statItemSchema = z.object({
 
 export const sectorInputSchema = z.object({
   id: optionalString,
-  slug: requiredString,
+  slug: requiredString.regex(slugPattern, "Use lowercase letters, numbers, and hyphens only."),
   sortOrder: z.coerce.number().int().min(0).default(0),
   published: z.boolean().default(true),
   name: requiredString,
   tagline: optionalString,
-  heroImageUrl: optionalString,
-  imageUrl: optionalString,
+  heroImageUrl: optionalMediaUrl,
+  imageUrl: optionalMediaUrl,
   seoTitle: optionalString,
   seoDescription: optionalString,
   ctaTitle: optionalString,
@@ -26,9 +45,9 @@ export const sectorInputSchema = z.object({
   officerSpecialization: optionalString,
   officerPhone: optionalString,
   officerEmail: optionalString,
-  officerImageUrl: optionalString,
-  consultationLink: optionalString,
-  reportLink: optionalString,
+  officerImageUrl: optionalMediaUrl,
+  consultationLink: optionalNavigationUrl,
+  reportLink: optionalAbsoluteUrl,
   officerDescription: optionalString,
   overviewParagraphs: z.array(requiredString).default([]),
   stats: z.array(statItemSchema).default([]),
@@ -39,7 +58,7 @@ export const sectorInputSchema = z.object({
 export const projectInputSchema = z.object({
   id: optionalString,
   legacyId: requiredString,
-  slug: requiredString,
+  slug: requiredString.regex(slugPattern, "Use lowercase letters, numbers, and hyphens only."),
   sectorId: requiredString,
   sortOrder: z.coerce.number().int().min(0).default(0),
   published: z.boolean().default(true),
@@ -47,11 +66,21 @@ export const projectInputSchema = z.object({
   title: requiredString,
   subTitle: optionalString,
   description: optionalString,
-  brochureUrl: optionalString,
-  moreInfoUrl: optionalString,
-  videoUrl: optionalString,
-  heroVideoUrl: optionalString,
-  media: z.array(z.object({ url: requiredString, altText: optionalString })).default([]),
+  brochureUrl: optionalAbsoluteUrl,
+  moreInfoUrl: optionalNavigationUrl,
+  videoUrl: optionalMediaUrl,
+  heroVideoUrl: optionalMediaUrl,
+  media: z
+    .array(
+      z.object({
+        url: requiredString.refine(
+          isSafeMediaUrl,
+          "Enter a valid media URL starting with https://, http://, or /.",
+        ),
+        altText: optionalString,
+      }),
+    )
+    .default([]),
   stats: z.array(statItemSchema).default([]),
   highlights: z.array(requiredString).default([]),
   financialItems: z.array(requiredString).default([]),
@@ -62,7 +91,7 @@ export const speakerInputSchema = z.object({
   name: requiredString,
   title: optionalString,
   company: optionalString,
-  imageUrl: optionalString,
+  imageUrl: optionalMediaUrl,
   alt: optionalString,
 });
 

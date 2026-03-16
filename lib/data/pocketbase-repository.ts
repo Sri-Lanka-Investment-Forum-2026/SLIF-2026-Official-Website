@@ -6,6 +6,12 @@ import {
   createPocketBaseSuperuserClient,
 } from "@/lib/pocketbase";
 import type { MediaAssetUpsertInput } from "@/lib/data/repository";
+import {
+  buildPocketBaseEqFilter,
+  buildPocketBaseOrFilter,
+  normalizeLegacyIdLookup,
+  normalizeSlugLookup,
+} from "@/lib/pocketbase-filter";
 
 const asNullable = (value?: string | null) => {
   const normalized = value?.trim();
@@ -16,6 +22,7 @@ const getReadClient = async () => {
   try {
     return await createPocketBaseServerClient();
   } catch {
+    // Reads may fall back to an unauthenticated client, but never to a superuser.
     return createPocketBaseClient();
   }
 };
@@ -73,10 +80,8 @@ const uniqueIds = (records: any[]) => [...new Set(records.map((record) => record
 
 const createIdMap = (records: any[]) => new Map(records.map((record) => [record.id, record]));
 
-const quoteFilterValue = (value: string) => `"${value.replace(/"/g, '\\"')}"`;
-
 const buildRelationOrFilter = (field: string, ids: string[]) =>
-  ids.map((id) => `${field} = ${quoteFilterValue(id)}`).join(" || ");
+  buildPocketBaseOrFilter(field, ids);
 
 async function getFullList(pb: PocketBase, collection: string, options: Record<string, unknown> = {}) {
   return pb.collection(collection).getFullList({
@@ -367,11 +372,20 @@ export const pocketbaseRepository = {
   },
 
   async getSectorBySlug(slug: string) {
+    const normalizedSlug = normalizeSlugLookup(slug);
+
+    if (!normalizedSlug) {
+      return null;
+    }
+
     const pb = await getReadClient();
     try {
-      const sector = await pb.collection("sectors").getFirstListItem(`published = true && slug = "${slug}"`, {
-        requestKey: null,
-      });
+      const sector = await pb.collection("sectors").getFirstListItem(
+        `published = true && ${buildPocketBaseEqFilter("slug", normalizedSlug)}`,
+        {
+          requestKey: null,
+        },
+      );
       const [hydratedSector] = await hydrateSectors(pb, [sector], { includeProjects: true });
       return hydratedSector ?? null;
     } catch {
@@ -380,11 +394,24 @@ export const pocketbaseRepository = {
   },
 
   async getProjectBySlugOrLegacyId(value: string) {
+    const slug = normalizeSlugLookup(value);
+    const legacyId = normalizeLegacyIdLookup(value);
+
+    if (!slug && !legacyId) {
+      return null;
+    }
+
     const pb = await getReadClient();
 
     try {
+      const filters = [slug ? buildPocketBaseEqFilter("slug", slug) : null];
+
+      if (legacyId) {
+        filters.push(buildPocketBaseEqFilter("legacyId", legacyId));
+      }
+
       const project = await pb.collection("projects").getFirstListItem(
-        `published = true && (slug = "${value}" || legacyId = "${value}")`,
+        `published = true && (${filters.filter(Boolean).join(" || ")})`,
         {
           requestKey: null,
         },
@@ -600,12 +627,21 @@ export const pocketbaseRepository = {
   },
 
   async findSectorBySlugAny(slug: string) {
+    const normalizedSlug = normalizeSlugLookup(slug);
+
+    if (!normalizedSlug) {
+      return null;
+    }
+
     const pb = await getReadClient();
     try {
-      const sector = await pb.collection("sectors").getFirstListItem(`slug = "${slug}"`, {
+      const sector = await pb.collection("sectors").getFirstListItem(
+        buildPocketBaseEqFilter("slug", normalizedSlug),
+        {
         requestKey: null,
         fields: "slug",
-      });
+        },
+      );
       return { slug: sector.slug };
     } catch {
       return null;
@@ -613,12 +649,21 @@ export const pocketbaseRepository = {
   },
 
   async findProjectByLegacyIdAny(legacyId: string) {
+    const normalizedLegacyId = normalizeLegacyIdLookup(legacyId);
+
+    if (!normalizedLegacyId) {
+      return null;
+    }
+
     const pb = await getReadClient();
     try {
-      const project = await pb.collection("projects").getFirstListItem(`legacyId = "${legacyId}"`, {
-        requestKey: null,
-        fields: "slug",
-      });
+      const project = await pb.collection("projects").getFirstListItem(
+        buildPocketBaseEqFilter("legacyId", normalizedLegacyId),
+        {
+          requestKey: null,
+          fields: "slug",
+        },
+      );
       return { slug: project.slug };
     } catch {
       return null;
@@ -779,7 +824,7 @@ export const pocketbaseRepository = {
 
     try {
       const existing = await pb.collection("media_assets").getFirstListItem(
-        `publicUrl = "${input.publicUrl}"`,
+        buildPocketBaseEqFilter("publicUrl", input.publicUrl),
         {
           requestKey: null,
         },

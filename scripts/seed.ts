@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { env } from "@/lib/env";
 import { createPocketBaseSuperuserClient, POCKETBASE_ADMIN_COLLECTION } from "@/lib/pocketbase";
+import { buildPocketBaseEqFilter } from "@/lib/pocketbase-filter";
 import { applyPocketBaseSchema } from "@/lib/pocketbase-schema";
 import { registerMediaUrl } from "@/lib/media";
 import { slugify } from "@/lib/utils";
@@ -131,9 +132,11 @@ const ensureAdminUser = async (pb: any) => {
   };
 
   try {
-    const existing = await pb.collection(POCKETBASE_ADMIN_COLLECTION).getFirstListItem(`email = "${email}"`, {
-      requestKey: null,
-    });
+    const existing = await pb
+      .collection(POCKETBASE_ADMIN_COLLECTION)
+      .getFirstListItem(buildPocketBaseEqFilter("email", email), {
+        requestKey: null,
+      });
 
     await pb.collection(POCKETBASE_ADMIN_COLLECTION).update(existing.id, payload, {
       requestKey: null,

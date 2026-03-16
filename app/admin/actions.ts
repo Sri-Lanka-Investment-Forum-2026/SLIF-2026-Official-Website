@@ -1,5 +1,6 @@
 "use server";
 import { revalidatePath } from "next/cache";
+import { ZodError } from "zod";
 
 import { signIn, signOut } from "@/auth";
 import { dataRepository } from "@/lib/data/repository";
@@ -37,6 +38,20 @@ const revalidatePublic = (...paths: string[]) => {
   for (const path of paths) {
     revalidatePath(path);
   }
+};
+
+const normalizeSlugValue = (value: string) => value.trim().toLowerCase();
+
+const toActionError = (error: unknown, fallback: string) => {
+  if (error instanceof ZodError) {
+    return new Error(error.issues[0]?.message ?? fallback);
+  }
+
+  if (error instanceof Error && error.message) {
+    return error;
+  }
+
+  return new Error(fallback);
 };
 
 export async function loginAction(
@@ -88,13 +103,20 @@ export async function logoutAction() {
 export async function saveSectorAction(input: SectorInput) {
   await requireAdmin();
 
-  const parsed = sectorInputSchema.parse({
-    ...input,
-    overviewParagraphs: normalizeStringList(input.overviewParagraphs),
-    stats: normalizeStatList(input.stats),
-    whyInvestItems: normalizeStringList(input.whyInvestItems),
-    advantages: normalizeStringList(input.advantages),
-  });
+  let parsed: SectorInput;
+
+  try {
+    parsed = sectorInputSchema.parse({
+      ...input,
+      slug: normalizeSlugValue(input.slug),
+      overviewParagraphs: normalizeStringList(input.overviewParagraphs),
+      stats: normalizeStatList(input.stats),
+      whyInvestItems: normalizeStringList(input.whyInvestItems),
+      advantages: normalizeStringList(input.advantages),
+    });
+  } catch (error) {
+    throw toActionError(error, "Unable to save sector.");
+  }
 
   await Promise.all([
     registerMediaUrl(parsed.heroImageUrl),
@@ -119,13 +141,20 @@ export async function deleteSectorAction(id: string) {
 export async function saveProjectAction(input: ProjectInput) {
   await requireAdmin();
 
-  const parsed = projectInputSchema.parse({
-    ...input,
-    media: normalizeMediaList(input.media),
-    stats: normalizeStatList(input.stats),
-    highlights: normalizeStringList(input.highlights),
-    financialItems: normalizeStringList(input.financialItems),
-  });
+  let parsed: ProjectInput;
+
+  try {
+    parsed = projectInputSchema.parse({
+      ...input,
+      slug: normalizeSlugValue(input.slug),
+      media: normalizeMediaList(input.media),
+      stats: normalizeStatList(input.stats),
+      highlights: normalizeStringList(input.highlights),
+      financialItems: normalizeStringList(input.financialItems),
+    });
+  } catch (error) {
+    throw toActionError(error, "Unable to save project.");
+  }
 
   await Promise.all([
     ...parsed.media.map((item) => registerMediaUrl(item.url, { altText: item.altText })),
@@ -156,13 +185,19 @@ export async function deleteProjectAction(id: string) {
 export async function saveSpeakerSettingsAction(input: SpeakerSettingsInput) {
   await requireAdmin();
 
-  const parsed = speakerSettingsSchema.parse({
-    ...input,
-    sessions: input.sessions.map((session) => ({
-      ...session,
-      speakers: session.speakers.filter((speaker) => speaker.name.trim()),
-    })),
-  });
+  let parsed: SpeakerSettingsInput;
+
+  try {
+    parsed = speakerSettingsSchema.parse({
+      ...input,
+      sessions: input.sessions.map((session) => ({
+        ...session,
+        speakers: session.speakers.filter((speaker) => speaker.name.trim()),
+      })),
+    });
+  } catch (error) {
+    throw toActionError(error, "Unable to save speakers.");
+  }
 
   await Promise.all(
     parsed.sessions.flatMap((session) =>

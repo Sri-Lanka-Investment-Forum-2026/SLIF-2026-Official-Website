@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "check": "next typegen && tsc --noEmit",
+    "test": "node --import tsx --test tests/**/*.test.ts",
     "pb:schema": "node --env-file=.env --import tsx scripts/pocketbase-apply-schema.ts",
     "pb:bootstrap-admin": "node --env-file=.env --import tsx scripts/pocketbase-bootstrap-admin.ts",
     "pb:setup": "npm run pb:schema && npm run pb:bootstrap-admin",

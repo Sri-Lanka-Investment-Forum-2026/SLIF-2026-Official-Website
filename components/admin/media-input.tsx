@@ -2,6 +2,8 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 
+import { isSafeMediaUrl, toSafeNavigationHref } from "@/lib/utils";
+
 type MediaInputProps = {
   label: string;
   value: string;
@@ -18,6 +20,8 @@ export function MediaInput({ label, value, onChange, folder, accept, preview }: 
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [previewFailed, setPreviewFailed] = useState(false);
+  const safeValueHref = toSafeNavigationHref(value);
+  const safePreviewSrc = isSafeMediaUrl(value) ? value.trim() : null;
 
   useEffect(() => {
     setPreviewFailed(false);
@@ -77,8 +81,13 @@ export function MediaInput({ label, value, onChange, folder, accept, preview }: 
         >
           {isUploading ? "Uploading..." : "Upload file"}
         </button>
-        {value ? (
-          <a className="btn btn-link btn-sm p-0" href={value} target="_blank" rel="noopener noreferrer">
+        {safeValueHref ? (
+          <a
+            className="btn btn-link btn-sm p-0"
+            href={safeValueHref}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Open asset
           </a>
         ) : null}
@@ -88,10 +97,10 @@ export function MediaInput({ label, value, onChange, folder, accept, preview }: 
           {error}
         </div>
       ) : null}
-      {preview === "image" && value && !previewFailed ? (
+      {preview === "image" && safePreviewSrc && !previewFailed ? (
         <div className="admin-media-preview mt-3">
           <img
-            src={value}
+            src={safePreviewSrc}
             alt={`${label} preview`}
             className="admin-media-preview-image"
             loading="lazy"

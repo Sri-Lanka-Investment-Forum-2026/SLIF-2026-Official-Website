@@ -121,7 +121,7 @@ export function ProjectBrochureDialog({
   }, []);
 
   const brochureUrl = hasRenderableBrochure(project.brochureUrl)
-    ? project.brochureUrl
+    ? project.brochureUrl.trim()
     : null;
 
   const metaUrl = useMemo(

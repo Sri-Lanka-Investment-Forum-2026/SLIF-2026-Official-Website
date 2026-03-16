@@ -4,7 +4,7 @@ import Link from "next/link";
 import { startTransition, useState } from "react";
 
 import { ProjectBrochureDialog } from "@/components/public/project-brochure-dialog";
-import { hasRenderableBrochure } from "@/lib/utils";
+import { hasRenderableBrochure, toSafeMediaUrl } from "@/lib/utils";
 
 type ProjectStat = {
   id: string;
@@ -101,7 +101,7 @@ export function SectorProjectShowcase({
 
       <div id="flagshipProjects" className="slif-project-list">
         {visibleProjects.map((project) => {
-          const image = project.media[0]?.url ?? fallbackImage;
+          const image = toSafeMediaUrl(project.media[0]?.url, fallbackImage);
           const isFlagship = project.type?.toLowerCase() === "flagship";
           const imageAlt =
             project.media[0]?.altText?.trim() ||
@@ -162,7 +162,10 @@ export function SectorProjectShowcase({
                 ) : null}
 
                 <div className="slif-project-actions">
-                  <Link href="/contact" className="btn btn-primary">
+                  <Link
+                    href="mailto:readytoinvest@boi.lk?subject=Inquiry%20about%20investment%20opportunities&body=I%20am%20interested%20in%20learning%20more%20about%20the%20investment%20opportunities%20available.%20Please%20provide%20me%20with%20more%20information."
+                    className="btn btn-primary"
+                  >
                     Contact Investment Team{" "}
                     <i className="bi bi-arrow-right ms-1" />
                   </Link>

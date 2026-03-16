@@ -1,5 +1,6 @@
 import { CountdownTimer } from "@/components/public/countdown-timer";
 import { getSpeakerContent } from "@/lib/content";
+import { toSafeMediaUrl } from "@/lib/utils";
 
 const featureCards = [
   {
@@ -306,7 +307,7 @@ export async function HomePageContent() {
                         <div className="speaker-card h-100">
                           <div className="speaker-image">
                             <img
-                              src={speaker.imageUrl ?? ""}
+                              src={toSafeMediaUrl(speaker.imageUrl, "/assets/img/herobg.png")}
                               alt={speaker.alt ?? speaker.name}
                               className="img-fluid"
                               loading="lazy"

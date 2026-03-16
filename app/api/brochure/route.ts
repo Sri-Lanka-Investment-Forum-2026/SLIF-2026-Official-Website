@@ -1,4 +1,4 @@
-import { fetchBrochureResponse } from "@/lib/brochure";
+import { fetchBrochureBuffer, getBrochureErrorResponse } from "@/lib/brochure";
 
 export const runtime = "nodejs";
 
@@ -11,32 +11,20 @@ export async function GET(request: Request) {
   }
 
   try {
-    const upstream = await fetchBrochureResponse(brochureUrl);
+    const brochure = await fetchBrochureBuffer(brochureUrl);
 
-    const headers = new Headers();
-    headers.set(
-      "Content-Type",
-      upstream.headers.get("content-type") ?? "application/pdf",
-    );
+    const headers = new Headers({
+      "Content-Type": brochure.contentType,
+    });
     headers.set("Cache-Control", "public, max-age=3600, s-maxage=3600");
+    headers.set("Content-Length", String(brochure.contentLength));
 
-    const contentLength = upstream.headers.get("content-length");
-    if (contentLength) {
-      headers.set("Content-Length", contentLength);
-    }
-
-    return new Response(upstream.body, {
+    return new Response(brochure.buffer, {
       status: 200,
       headers,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unable to load brochure.";
-    const status =
-      message === "Unsupported brochure origin."
-        ? 403
-        : message === "Unable to load brochure."
-          ? 502
-          : 400;
+    const { message, status } = getBrochureErrorResponse(error, 502);
 
     return Response.json({ error: message }, { status });
   }

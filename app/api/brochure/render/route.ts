@@ -4,23 +4,43 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
-import { fetchBrochureBuffer } from "@/lib/brochure";
+import { fetchBrochureBuffer, getBrochureErrorResponse } from "@/lib/brochure";
 
 const execFileAsync = promisify(execFile);
+const PDF_RENDER_TIMEOUT_MS = 15_000;
+const MIN_RENDER_PAGE = 1;
+const MAX_RENDER_PAGE = 2;
+const DEFAULT_RENDER_WIDTH = 1400;
+const MAX_RENDER_WIDTH = 1600;
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function parsePositiveInteger(value: string | null, fallback: number) {
+function parseBoundedInteger(value: string | null, fallback: number, min: number, max: number) {
   const parsed = Number.parseInt(value ?? "", 10);
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+
+  if (!Number.isFinite(parsed)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, parsed));
 }
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const brochureUrl = requestUrl.searchParams.get("url");
-  const page = parsePositiveInteger(requestUrl.searchParams.get("page"), 1);
-  const width = parsePositiveInteger(requestUrl.searchParams.get("width"), 1400);
+  const page = parseBoundedInteger(
+    requestUrl.searchParams.get("page"),
+    MIN_RENDER_PAGE,
+    MIN_RENDER_PAGE,
+    MAX_RENDER_PAGE,
+  );
+  const width = parseBoundedInteger(
+    requestUrl.searchParams.get("width"),
+    DEFAULT_RENDER_WIDTH,
+    400,
+    MAX_RENDER_WIDTH,
+  );
 
   if (!brochureUrl) {
     return Response.json({ error: "Missing brochure URL." }, { status: 400 });
@@ -49,7 +69,9 @@ export async function GET(request: Request) {
       String(width),
       pdfPath,
       imagePrefix,
-    ]);
+    ], {
+      timeout: PDF_RENDER_TIMEOUT_MS,
+    });
 
     const image = await readFile(imagePath);
 
@@ -61,14 +83,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unable to render brochure page.";
-    const status =
-      message === "Unsupported brochure origin."
-        ? 403
-        : message === "Unable to load brochure."
-          ? 502
-          : 500;
+    const { message, status } = getBrochureErrorResponse(error, 500);
 
     return Response.json({ error: message }, { status });
   } finally {

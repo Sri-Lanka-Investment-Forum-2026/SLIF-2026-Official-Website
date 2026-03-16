@@ -5,13 +5,19 @@ import { notFound } from "next/navigation";
 import { SectorProjectShowcase } from "@/components/public/sector-project-showcase";
 import { getSectorBySlug } from "@/lib/content";
 import { env } from "@/lib/env";
-import { hasUsableHref, isAbsoluteUrl } from "@/lib/utils";
+import {
+  isAbsoluteUrl,
+  toSafeMediaUrl,
+  toSafeNavigationHref,
+} from "@/lib/utils";
 
 type SectorDetailPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({ params }: SectorDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: SectorDetailPageProps): Promise<Metadata> {
   if (!env.sectorsPagePublished) {
     return {};
   }
@@ -38,7 +44,9 @@ const cardIcons = [
   "bi-shield-check",
 ];
 
-export default async function SectorDetailPage({ params }: SectorDetailPageProps) {
+export default async function SectorDetailPage({
+  params,
+}: SectorDetailPageProps) {
   if (!env.sectorsPagePublished) {
     notFound();
   }
@@ -50,10 +58,20 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
     notFound();
   }
 
-  const consultationLink = hasUsableHref(sector.consultationLink)
-    ? sector.consultationLink
-    : null;
-  const reportLink = hasUsableHref(sector.reportLink) ? sector.reportLink : null;
+  const heroImage = toSafeMediaUrl(
+    sector.heroImageUrl ?? sector.imageUrl,
+    "/assets/img/herobg.png",
+  );
+  const overviewImage = toSafeMediaUrl(
+    sector.imageUrl ?? sector.heroImageUrl,
+    "/assets/img/herobg.png",
+  );
+  const officerImage = toSafeMediaUrl(
+    sector.officerImageUrl,
+    "/assets/img/person/person-m-8.webp",
+  );
+  const consultationLink = toSafeNavigationHref(sector.consultationLink);
+  const reportLink = toSafeNavigationHref(sector.reportLink);
   const officerPhone = sector.officerPhone?.trim() ?? "";
   const officerEmail = sector.officerEmail?.trim() ?? "";
 
@@ -64,7 +82,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
           <section className="slif-sector-hero position-relative">
             <img
               className="slif-sector-hero-image"
-              src={sector.heroImageUrl ?? sector.imageUrl ?? "/assets/img/herobg.png"}
+              src={heroImage}
               alt={sector.name}
               loading="lazy"
             />
@@ -74,7 +92,10 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
               <p className="slif-kicker mb-2">Sri Lanka Investment Forum</p>
               <h1 className="mb-3">{sector.name}</h1>
               <p className="lead mb-4">{sector.tagline}</p>
-              <a href="#sectorProjects" className="btn btn-primary slif-cta-btn">
+              <a
+                href="#sectorProjects"
+                className="btn btn-primary slif-cta-btn"
+              >
                 Explore Opportunities
               </a>
             </div>
@@ -86,7 +107,9 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                 <div key={stat.id} className="col-5 col-lg-3">
                   <article className="slif-stat-card h-100 fade-in-up">
                     <span className="slif-card-icon-box" aria-hidden="true">
-                      <i className={`bi ${cardIcons[index % cardIcons.length]}`} />
+                      <i
+                        className={`bi ${cardIcons[index % cardIcons.length]}`}
+                      />
                     </span>
                     <p className="slif-stat-value mb-1">{stat.value}</p>
                     <p className="slif-stat-label mb-0">{stat.label}</p>
@@ -111,7 +134,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                 <div className="col-lg-6">
                   <div className="slif-glass-image">
                     <img
-                      src={sector.imageUrl ?? sector.heroImageUrl ?? "/assets/img/herobg.png"}
+                      src={overviewImage}
                       className="img-fluid rounded-4"
                       alt={`${sector.name} overview`}
                       loading="lazy"
@@ -125,9 +148,14 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
               <h2 className="section-title mb-4">Why Invest</h2>
               <div className="slif-bullet-grid">
                 {sector.whyInvestItems.map((item: any, index: number) => (
-                  <article className="slif-bullet-card fade-in-up" key={item.id}>
+                  <article
+                    className="slif-bullet-card fade-in-up"
+                    key={item.id}
+                  >
                     <span className="slif-card-icon-box" aria-hidden="true">
-                      <i className={`bi ${cardIcons[index % cardIcons.length]}`} />
+                      <i
+                        className={`bi ${cardIcons[index % cardIcons.length]}`}
+                      />
                     </span>
                     <div>
                       <p className="mb-0">{item.value}</p>
@@ -143,7 +171,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
             <section id="sectorProjects" className="slif-section-modern">
               <SectorProjectShowcase
                 projects={sector.projects}
-                fallbackImage={sector.heroImageUrl ?? "/assets/img/herobg.png"}
+                fallbackImage={heroImage}
               />
             </section>
 
@@ -154,7 +182,9 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                   <div className="col-12 col-md-6 col-lg-4" key={item.id}>
                     <article className="slif-adv-card h-100 fade-in-up">
                       <span className="slif-card-icon-box" aria-hidden="true">
-                        <i className={`bi ${cardIcons[(index + 2) % cardIcons.length]}`} />
+                        <i
+                          className={`bi ${cardIcons[(index + 2) % cardIcons.length]}`}
+                        />
                       </span>
                       <div>
                         <p className="mb-0">{item.value}</p>
@@ -168,7 +198,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
               </div>
             </section>
 
-            <section className="slif-sector-contact p-5 rounded-4 mb-5">
+            {/* <section className="slif-sector-contact p-5 rounded-4 mb-5">
               <div className="slif-sector-officer-wrapper">
                 <div className="container">
                   <div className="slif-sector-officer-section">
@@ -208,7 +238,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                         <div className="d-flex align-items-center mb-3">
                           <img
                             className="slif-officer-img me-3"
-                            src={sector.officerImageUrl ?? "/assets/img/person/person-m-8.webp"}
+                            src={officerImage}
                             alt={sector.officerName ?? "Sector officer"}
                           />
                           <div>
@@ -238,7 +268,7 @@ export default async function SectorDetailPage({ params }: SectorDetailPageProps
                   </div>
                 </div>
               </div>
-            </section>
+            </section> */}
           </div>
         </div>
       </main>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { getPublishedSectors } from "@/lib/content";
 import { env } from "@/lib/env";
+import { toSafeMediaUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
@@ -101,7 +102,7 @@ export default async function SectorsPage() {
                       <article className="card border-0 sector-card h-100">
                         <div className="sector-media">
                           <img
-                            src={sector.heroImageUrl ?? "/assets/img/herobg.png"}
+                            src={toSafeMediaUrl(sector.heroImageUrl, "/assets/img/herobg.png")}
                             loading="lazy"
                             alt={`${sector.name} sector`}
                           />
