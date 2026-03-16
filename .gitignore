@@ -22,3 +22,4 @@ tsconfig.tsbuildinfo
 prisma/*.db
 prisma/*.db-journal
 backups/
+slif-next.zip

@@ -22,17 +22,6 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const preservedSectorDetails = {
-    officerName: initialValue.officerName,
-    officerTitle: initialValue.officerTitle,
-    officerSpecialization: initialValue.officerSpecialization,
-    officerPhone: initialValue.officerPhone,
-    officerEmail: initialValue.officerEmail,
-    officerImageUrl: initialValue.officerImageUrl,
-    consultationLink: initialValue.consultationLink,
-    reportLink: initialValue.reportLink,
-    officerDescription: initialValue.officerDescription,
-  };
   const [overviewText, setOverviewText] = useState(
     initialValue.overviewParagraphs.join("\n"),
   );
@@ -59,7 +48,15 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
       try {
         const result = await saveSectorAction({
           ...values,
-          ...preservedSectorDetails,
+          officerName: "",
+          officerTitle: "",
+          officerSpecialization: "",
+          officerPhone: "",
+          officerEmail: "",
+          officerImageUrl: "",
+          consultationLink: "",
+          reportLink: "",
+          officerDescription: "",
           overviewParagraphs: parseLines(overviewText),
           whyInvestItems: parseLines(whyInvestText),
           advantages: parseLines(advantagesText),
