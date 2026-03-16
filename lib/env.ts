@@ -29,7 +29,7 @@ export const env = {
   pocketbaseUrl: process.env.POCKETBASE_URL ?? defaultPocketBaseUrl,
   pocketbaseSuperuserEmail: process.env.POCKETBASE_SUPERUSER_EMAIL,
   pocketbaseSuperuserPassword: process.env.POCKETBASE_SUPERUSER_PASSWORD,
-  sectorsPagePublished: parseBooleanEnv(process.env.SECTORS_PAGE_PUBLISHED, true),
+  sectorsPagePublished: parseBooleanEnv(process.env.SECTORS_PAGE_PUBLISHED, false),
   mediaPublicBaseUrl:
     process.env.MEDIA_PUBLIC_BASE_URL ?? "https://media.srilankainvestmentforum.com",
   minioEndpoint: process.env.MINIO_ENDPOINT,
