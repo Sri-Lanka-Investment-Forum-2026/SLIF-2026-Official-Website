@@ -429,14 +429,32 @@ export const pocketbaseRepository = {
 
   async getSpeakerContent() {
     const pb = await getReadClient();
-    const [settings, sessions, speakers] = await Promise.all([
-      pb
-        .collection("speaker_section_settings")
-        .getFirstListItem(`key = "singleton"`, { requestKey: null })
-        .catch(() => null),
+    const [settingsResult, sessionsResult, speakersResult] = await Promise.allSettled([
+      pb.collection("speaker_section_settings").getFirstListItem(`key = "singleton"`, {
+        requestKey: null,
+      }),
       getFullList(pb, "speaker_sessions", { sort: "sortOrder" }),
       getFullList(pb, "speakers", { sort: "sortOrder" }),
     ]);
+
+    if (
+      settingsResult.status === "rejected" ||
+      sessionsResult.status === "rejected" ||
+      speakersResult.status === "rejected"
+    ) {
+      console.error("Unable to load speaker content from PocketBase.", {
+        settingsError:
+          settingsResult.status === "rejected" ? settingsResult.reason : null,
+        sessionsError:
+          sessionsResult.status === "rejected" ? sessionsResult.reason : null,
+        speakersError:
+          speakersResult.status === "rejected" ? speakersResult.reason : null,
+      });
+    }
+
+    const settings = settingsResult.status === "fulfilled" ? settingsResult.value : null;
+    const sessions = sessionsResult.status === "fulfilled" ? sessionsResult.value : [];
+    const speakers = speakersResult.status === "fulfilled" ? speakersResult.value : [];
 
     const speakersBySession = speakers.reduce((map, speaker) => {
       const existing = map.get(speaker.session) ?? [];

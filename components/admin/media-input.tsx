@@ -27,6 +27,24 @@ export function MediaInput({ label, value, onChange, folder, accept, preview }: 
     setPreviewFailed(false);
   }, [value]);
 
+  const readUploadResponse = async (response: Response) => {
+    const body = await response.text();
+
+    if (!body) {
+      return {} as { url?: string; error?: string };
+    }
+
+    try {
+      return JSON.parse(body) as { url?: string; error?: string };
+    } catch {
+      return {
+        error: response.ok
+          ? "Upload returned an invalid response."
+          : `Upload failed with status ${response.status}.`,
+      };
+    }
+  };
+
   const upload = async (file: File) => {
     const formData = new FormData();
     formData.set("file", file);
@@ -41,7 +59,7 @@ export function MediaInput({ label, value, onChange, folder, accept, preview }: 
         body: formData,
       });
 
-      const data = (await response.json()) as { url?: string; error?: string };
+      const data = await readUploadResponse(response);
 
       if (!response.ok || !data.url) {
         throw new Error(data.error ?? "Upload failed.");

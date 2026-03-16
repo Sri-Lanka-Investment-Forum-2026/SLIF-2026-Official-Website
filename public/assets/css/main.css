@@ -171,7 +171,7 @@ h6 {
 .header .getstarted-text {
   margin: 0;
   font-family: var(--heading-font);
-  font-size: 1.2rem;
+  font-size: 1rem;
   font-weight: 600;
   line-height: 1.2;
   color: var(--heading-color);
@@ -1135,7 +1135,11 @@ section,
   border: 1px solid rgba(44, 0, 248, 0.08);
   border-radius: 28px;
   background:
-    radial-gradient(circle at top right, rgba(44, 0, 248, 0.08), transparent 32%),
+    radial-gradient(
+      circle at top right,
+      rgba(44, 0, 248, 0.08),
+      transparent 32%
+    ),
     linear-gradient(135deg, #ffffff 0%, #f4f7ff 100%);
   box-shadow: 0 24px 60px rgba(20, 29, 61, 0.12);
 }
