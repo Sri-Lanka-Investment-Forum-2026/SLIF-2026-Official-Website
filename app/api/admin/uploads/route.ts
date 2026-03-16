@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 
 import { auth } from "@/auth";
 import { registerMediaUrl } from "@/lib/media";
-import { uploadToMinio } from "@/lib/minio";
+import { formatStorageError, uploadToMinio } from "@/lib/minio";
 import { normalizeUploadFolder, validateUploadFile } from "@/lib/upload-policy";
 import { slugify } from "@/lib/utils";
 
@@ -60,10 +60,11 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     console.error("Media upload failed.", error);
+    const message = formatStorageError(error);
 
     return NextResponse.json(
       {
-        error: error instanceof Error && error.message ? error.message : "Upload failed.",
+        error: message,
       },
       { status: 500 },
     );

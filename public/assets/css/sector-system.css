@@ -1541,3 +1541,356 @@
     max-width: 320px;
   }
 }
+
+/*--------------------------------------------------------------
+# Responsive Hardening
+--------------------------------------------------------------*/
+.slif-sector-page h1,
+.slif-project-page h1,
+.slif-sector-page .lead,
+.slif-project-page .lead {
+  text-wrap: balance;
+}
+
+.slif-investment-panel,
+.slif-investment-panel .btn,
+.slif-investment-panel .btn-link,
+.slif-officer-card,
+.slif-officer-card a {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.slif-investment-panel .btn-link {
+  display: block;
+  text-align: center;
+}
+
+@media (max-width: 1199px) {
+  .slif-sector-hero,
+  .slif-project-hero {
+    min-height: clamp(240px, 52vw, 420px);
+  }
+
+  .slif-sector-hero-content {
+    padding-top: clamp(1rem, 3vw, 1.75rem);
+    padding-bottom: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .slif-sector-page .lead,
+  .slif-project-page .lead {
+    max-width: 40ch;
+  }
+
+  .slif-project-page .row.g-4 {
+    row-gap: 1.5rem;
+  }
+
+  .slif-investment-panel {
+    padding: 1.25rem;
+  }
+
+  .slif-brochure-modal {
+    width: min(100%, 1200px);
+    height: min(92dvh, 920px);
+    max-height: calc(100dvh - 1rem);
+  }
+
+  .slif-brochure-modal-body {
+    overflow: hidden;
+  }
+
+  .slif-brochure-stage {
+    align-content: start;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .slif-sector-hero,
+  .slif-project-hero {
+    min-height: 300px;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .slif-kicker {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+
+  .slif-section-modern {
+    padding: 1.8rem 0;
+  }
+
+  .slif-stats-wrapper .row {
+    row-gap: 0.85rem;
+  }
+
+  .slif-stat-card,
+  .slif-adv-card,
+  .slif-fact-card,
+  .slif-bullet-card {
+    padding: 1rem;
+    border-radius: 14px;
+  }
+
+  .slif-card-icon-box {
+    width: 46px;
+    height: 46px;
+    margin-bottom: 12px;
+  }
+
+  .slif-glass-image {
+    padding: 8px;
+    border-radius: 16px;
+  }
+
+  .slif-project-media {
+    min-height: 220px;
+  }
+
+  .slif-project-body {
+    padding: 1.25rem;
+  }
+
+  .slif-project-stats {
+    gap: 0.75rem 1rem;
+  }
+
+  .slif-project-actions {
+    flex-direction: column;
+  }
+
+  .slif-project-actions .btn,
+  .slif-investment-panel .btn,
+  .slif-investment-panel .btn-link {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .slif-project-page .object-fit-cover {
+    aspect-ratio: 4 / 3;
+  }
+
+  .slif-brochure-modal-backdrop {
+    align-items: stretch;
+    padding:
+      max(0.5rem, env(safe-area-inset-top, 0px))
+      0.5rem
+      max(0.5rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .slif-brochure-modal {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+  }
+
+  .slif-brochure-modal-body {
+    min-height: 0;
+  }
+
+  .slif-brochure-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-height: 100%;
+    padding: 0.5rem;
+    gap: 0.85rem;
+  }
+
+  .slif-brochure-viewer {
+    width: 100%;
+    min-height: 0;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    column-gap: 0.35rem;
+  }
+
+  .slif-brochure-book-wrap {
+    padding: 0;
+  }
+
+  .slif-brochure-book-shadow,
+  .slif-brochure-book-wrap::before,
+  .slif-brochure-book-wrap::after {
+    display: none;
+  }
+
+  .slif-brochure-book {
+    width: min(100%, 360px);
+    max-height: min(100%, calc(100dvh - 13.5rem));
+  }
+
+  .slif-brochure-nav {
+    width: 44px;
+    height: 44px;
+  }
+
+  .slif-brochure-nav i {
+    font-size: 1.1rem;
+  }
+
+  .slif-brochure-rail {
+    gap: 0.75rem;
+    justify-content: flex-start;
+    padding-inline: 0.15rem;
+  }
+
+  .slif-brochure-rail-item {
+    min-width: 96px;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .slif-brochure-rail-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .slif-sector-officer-wrapper {
+    padding: 2rem 0;
+  }
+
+  .slif-sector-officer-section {
+    padding: 2rem 1.25rem;
+    border-radius: 24px;
+  }
+
+  .slif-officer-wrapper {
+    gap: 1.5rem;
+  }
+
+  .slif-officer-left {
+    max-width: none;
+  }
+
+  .slif-officer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .slif-officer-actions .btn {
+    width: 100%;
+    max-width: none;
+  }
+
+  .slif-officer-card {
+    max-width: none;
+    padding: 1.35rem;
+    border-radius: 20px;
+  }
+
+  .slif-officer-card > .d-flex {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 0.9rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .slif-sector-hero,
+  .slif-project-hero {
+    min-height: 260px;
+  }
+
+  .slif-sector-page h1,
+  .slif-project-page h1 {
+    font-size: clamp(1.8rem, 7vw, 2.25rem);
+  }
+
+  .slif-sector-page .lead,
+  .slif-project-page .lead {
+    font-size: 0.98rem;
+  }
+
+  .slif-stats-wrapper {
+    margin-top: -18px;
+    padding: 0.9rem;
+  }
+
+  .slif-stat-card,
+  .slif-adv-card,
+  .slif-fact-card,
+  .slif-bullet-card {
+    padding: 0.9rem;
+  }
+
+  .slif-bullet-grid {
+    gap: 0.75rem;
+  }
+
+  .slif-project-card .card-img-top {
+    height: 160px;
+  }
+
+  .slif-project-filter {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .slif-project-filter .btn {
+    flex: 1 1 140px;
+  }
+
+  .slif-project-media {
+    min-height: 200px;
+  }
+
+  .slif-project-badge {
+    top: 12px;
+    left: 12px;
+    font-size: 0.72rem;
+  }
+
+  .slif-media-open {
+    top: 12px;
+    right: 12px;
+    font-size: 0.72rem;
+  }
+
+  .slif-project-media-modal-body img,
+  .slif-project-media-modal-body video {
+    max-height: 56vh;
+  }
+
+  .slif-investment-panel {
+    padding: 1rem;
+    border-radius: 0.85rem;
+  }
+
+  .slif-brochure-modal-backdrop {
+    padding:
+      env(safe-area-inset-top, 0px)
+      0.35rem
+      max(0.35rem, env(safe-area-inset-bottom, 0px));
+  }
+
+  .slif-brochure-stage {
+    padding: 0.35rem;
+    gap: 0.75rem;
+  }
+
+  .slif-brochure-book {
+    max-height: calc(100dvh - 12.5rem);
+  }
+
+  .slif-brochure-rail-item {
+    min-width: 88px;
+  }
+
+  .slif-brochure-rail-label {
+    font-size: 0.9rem;
+  }
+
+  .slif-officer-title {
+    font-size: 1.45rem;
+  }
+
+  .slif-officer-desc {
+    font-size: 0.95rem;
+  }
+
+  .slif-officer-img {
+    width: 56px;
+    height: 56px;
+  }
+}

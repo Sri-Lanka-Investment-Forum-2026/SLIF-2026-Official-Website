@@ -21,34 +21,46 @@ function initSite() {
    */
   const mobileNavToggleBtn = document.querySelector('.mobile-nav-toggle');
   const navmenu = document.querySelector('#navmenu');
-  const navmenuList = navmenu ? navmenu.querySelector('ul') : null;
+  const navmenuList = navmenu ? navmenu.querySelector('.navmenu-list') : null;
   const pageBody = document.body;
+  const pageRoot = document.documentElement;
+  const header = document.querySelector('#header');
+  const isMobileViewport = () => window.innerWidth < 1200;
+
+  const syncHeaderHeight = () => {
+    if (!header) return;
+    pageRoot.style.setProperty('--slif-header-height', `${Math.ceil(header.offsetHeight)}px`);
+  };
 
   const setMobileNavState = (isOpen) => {
-    pageBody.classList.toggle('mobile-nav-active', isOpen);
+    const wasOpen = pageBody.classList.contains('mobile-nav-active');
+    const shouldOpen = isOpen && isMobileViewport();
+    pageBody.classList.toggle('mobile-nav-active', shouldOpen);
     if (!mobileNavToggleBtn) return;
-    mobileNavToggleBtn.classList.toggle('bi-list', !isOpen);
-    mobileNavToggleBtn.classList.toggle('bi-x', isOpen);
-    mobileNavToggleBtn.setAttribute('aria-expanded', String(isOpen));
+    mobileNavToggleBtn.classList.toggle('bi-list', !shouldOpen);
+    mobileNavToggleBtn.classList.toggle('bi-x', shouldOpen);
+    mobileNavToggleBtn.setAttribute('aria-expanded', String(shouldOpen));
     mobileNavToggleBtn.setAttribute(
       'aria-label',
-      isOpen ? 'Close navigation menu' : 'Open navigation menu'
+      shouldOpen ? 'Close navigation menu' : 'Open navigation menu'
     );
 
-    // Defensive visibility control for mobile menu list.
-    // This avoids edge cases where CSS state updates but the list remains hidden.
     if (navmenuList) {
-      const shouldForceOpen = isOpen && window.innerWidth < 1200;
-      if (shouldForceOpen) {
+      navmenuList.setAttribute('aria-hidden', String(!shouldOpen));
+      if (shouldOpen) {
         navmenuList.style.display = 'block';
         navmenuList.style.opacity = '1';
         navmenuList.style.visibility = 'visible';
         navmenuList.style.transform = 'translateY(0)';
+        navmenuList.querySelector('a')?.focus();
       } else {
         navmenuList.style.removeProperty('display');
         navmenuList.style.removeProperty('opacity');
         navmenuList.style.removeProperty('visibility');
         navmenuList.style.removeProperty('transform');
+        if (wasOpen) {
+          mobileNavToggleBtn.focus();
+        }
       }
     }
   };
@@ -61,8 +73,10 @@ function initSite() {
   if (mobileNavToggleBtn) {
     mobileNavToggleBtn.addEventListener('click', (event) => {
       event.stopPropagation();
+      syncHeaderHeight();
       toggleMobileNav();
     });
+    syncHeaderHeight();
     setMobileNavState(false);
   }
 
@@ -83,6 +97,15 @@ function initSite() {
     });
   }
 
+  document.addEventListener('click', (event) => {
+    if (!pageBody.classList.contains('mobile-nav-active')) return;
+    if (!navmenuList || !mobileNavToggleBtn) return;
+    const clickTarget = event.target;
+    if (!(clickTarget instanceof Element)) return;
+    if (navmenuList.contains(clickTarget) || mobileNavToggleBtn.contains(clickTarget)) return;
+    setMobileNavState(false);
+  });
+
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       setMobileNavState(false);
@@ -90,10 +113,12 @@ function initSite() {
   });
 
   window.addEventListener('resize', () => {
+    syncHeaderHeight();
     if (window.innerWidth >= 1200) {
       setMobileNavState(false);
     }
   });
+  window.addEventListener('load', syncHeaderHeight);
 
   /**
    * Toggle mobile nav dropdowns

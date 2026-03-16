@@ -124,7 +124,7 @@ export default async function ProjectDetailPage({
                             alt={
                               item.altText?.trim() || `${project.title} media`
                             }
-                            className="rounded-4 shadow-sm h-100 object-fit-cover"
+                            className="rounded-4 shadow-sm h-100 w-100 object-fit-cover"
                             loading="lazy"
                           />
                         </div>
@@ -139,7 +139,7 @@ export default async function ProjectDetailPage({
                   <h2 className="h5 mb-3">Quick Facts</h2>
                   <div className="row g-3">
                     {project.stats.slice(0, 4).map((fact: any) => (
-                      <div className="col-6 col-lg-12" key={fact.id}>
+                      <div className="col-12 col-sm-6 col-lg-12" key={fact.id}>
                         <article className="slif-fact-card">
                           <p className="small text-muted mb-1">{fact.label}</p>
                           <p className="mb-0 fw-semibold">{fact.value}</p>

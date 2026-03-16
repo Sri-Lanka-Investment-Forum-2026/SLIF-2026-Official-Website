@@ -6,15 +6,16 @@ export function SiteHeader() {
   return (
     <header id="header" className="header d-flex align-items-center fixed-top">
       <div className="header-container container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
-        <Link href="/" className="logo d-flex align-items-center" aria-label="SLIF home">
+        <Link
+          href="/"
+          className="logo d-flex align-items-center"
+          aria-label="SLIF home"
+        >
           <img src="/assets/img/slif-logo.png" alt="SLIF" />
         </Link>
 
         <nav id="navmenu" className="navmenu" aria-label="Primary">
-          <ul>
-            <li>
-              <Link href="/">Home</Link>
-            </li>
+          <ul className="navmenu-list">
             <li>
               <Link href="/#schedule">Programme</Link>
             </li>
@@ -42,6 +43,7 @@ export function SiteHeader() {
             aria-label="Open navigation menu"
             aria-controls="navmenu"
             aria-expanded="false"
+            aria-haspopup="true"
           />
         </nav>
 

@@ -7,6 +7,7 @@ body {
   min-height: 100vh;
   background: #f7f6f2;
   color: #1f2937;
+  overflow-x: hidden;
 }
 
 a {
@@ -26,6 +27,11 @@ textarea:focus-visible,
 
 img {
   max-width: 100%;
+}
+
+main {
+  min-width: 0;
+  overflow-x: clip;
 }
 
 .skip-link {

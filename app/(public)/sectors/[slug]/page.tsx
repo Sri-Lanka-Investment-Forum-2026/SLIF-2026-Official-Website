@@ -104,7 +104,7 @@ export default async function SectorDetailPage({
           <section className="container slif-stats-wrapper">
             <div className="row g-4 justify-content-center">
               {sector.stats.map((stat: any, index: number) => (
-                <div key={stat.id} className="col-5 col-lg-3">
+                <div key={stat.id} className="col-6 col-lg-3">
                   <article className="slif-stat-card h-100 fade-in-up">
                     <span className="slif-card-icon-box" aria-hidden="true">
                       <i
