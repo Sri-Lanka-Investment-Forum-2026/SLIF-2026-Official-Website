@@ -12,8 +12,14 @@ export const slugify = (value: string) =>
 
 export const cleanArray = <T>(items: T[]) => items.filter(Boolean);
 
-const SAFE_WEB_PROTOCOLS = new Set(["http:", "https:"]);
-const SAFE_HREF_PROTOCOLS = new Set(["http:", "https:", "mailto:", "tel:"]);
+const SAFE_WEB_PROTOCOLS = new Set(["http:", "https:", "#"]);
+const SAFE_HREF_PROTOCOLS = new Set([
+  "http:",
+  "https:",
+  "mailto:",
+  "tel:",
+  "#",
+]);
 const RELATIVE_PATH_PATTERN = /^\/(?!\/)/;
 
 const normalizeUrlValue = (value?: string | null) => {
@@ -80,8 +86,7 @@ export const isSafeMediaUrl = (value?: string | null) => {
   return RELATIVE_PATH_PATTERN.test(normalized) || isAbsoluteUrl(normalized);
 };
 
-export const hasUsableHref = (value?: string | null) =>
-  isSafeHref(value);
+export const hasUsableHref = (value?: string | null) => isSafeHref(value);
 
 export const hasRenderableBrochure = (value?: string | null): value is string =>
   isAbsoluteUrl(value);
@@ -91,7 +96,10 @@ export const toSafeNavigationHref = (value?: string | null): string | null => {
   return isSafeNavigationHref(normalized) ? (normalized ?? null) : null;
 };
 
-export const toSafeMediaUrl = (value: string | null | undefined, fallback: string): string => {
+export const toSafeMediaUrl = (
+  value: string | null | undefined,
+  fallback: string,
+): string => {
   const normalized = normalizeUrlValue(value);
   return isSafeMediaUrl(normalized) ? (normalized ?? fallback) : fallback;
 };
