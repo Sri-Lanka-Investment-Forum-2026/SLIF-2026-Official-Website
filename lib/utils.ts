@@ -21,6 +21,7 @@ const SAFE_HREF_PROTOCOLS = new Set([
   "#",
 ]);
 const RELATIVE_PATH_PATTERN = /^\/(?!\/)/;
+const HASH_LINK_PATTERN = /^#(?:[A-Za-z][\w:.-]*)?$/;
 
 const normalizeUrlValue = (value?: string | null) => {
   const normalized = value?.trim();
@@ -57,6 +58,10 @@ export const isSafeNavigationHref = (value?: string | null) => {
     return true;
   }
 
+  if (HASH_LINK_PATTERN.test(normalized)) {
+    return true;
+  }
+
   const parsed = tryParseUrl(normalized);
   return Boolean(parsed && SAFE_WEB_PROTOCOLS.has(parsed.protocol));
 };
@@ -69,6 +74,10 @@ export const isSafeHref = (value?: string | null) => {
   }
 
   if (RELATIVE_PATH_PATTERN.test(normalized)) {
+    return true;
+  }
+
+  if (HASH_LINK_PATTERN.test(normalized)) {
     return true;
   }
 

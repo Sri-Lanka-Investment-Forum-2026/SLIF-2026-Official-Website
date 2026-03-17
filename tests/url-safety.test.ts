@@ -13,6 +13,8 @@ import {
 test("safe URL helpers reject unsafe schemes and preserve supported links", () => {
   assert.equal(hasUsableHref("https://example.com/file.pdf"), true);
   assert.equal(hasUsableHref("/contact"), true);
+  assert.equal(hasUsableHref("#"), true);
+  assert.equal(hasUsableHref("#details"), true);
   assert.equal(hasUsableHref("mailto:info@example.com"), true);
   assert.equal(hasUsableHref("javascript:alert(1)"), false);
   assert.equal(isAbsoluteUrl("https://example.com"), true);
@@ -21,6 +23,7 @@ test("safe URL helpers reject unsafe schemes and preserve supported links", () =
   assert.equal(isSafeMediaUrl("data:text/html,boom"), false);
   assert.equal(hasRenderableBrochure("https://media.example.com/example.pdf"), true);
   assert.equal(hasRenderableBrochure("/downloads/example.pdf"), false);
+  assert.equal(toSafeNavigationHref("#"), "#");
   assert.equal(toSafeNavigationHref("javascript:alert(1)"), null);
 });
 
@@ -53,6 +56,19 @@ test("project schema rejects unsafe brochure and media URLs", () => {
 
   assert.equal(brochureResult.success, false);
   assert.equal(mediaResult.success, false);
+});
+
+test("project schema allows hash more-info links used by seeded content", () => {
+  assert.equal(
+    projectInputSchema.safeParse({
+      legacyId: "PRJ-001",
+      slug: "green-energy-park",
+      sectorId: "sector-1",
+      title: "Green Energy Park",
+      moreInfoUrl: "#",
+    }).success,
+    true,
+  );
 });
 
 test("speaker schema allows safe image URLs and rejects unsafe ones", () => {
