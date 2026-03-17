@@ -23,7 +23,7 @@ export function PublicPageTitle({
       <div className="heading">
         <div className="container">
           <div className="row d-flex justify-content-center text-center">
-            <div className={`col-lg-8${topPadding ? " pt-4" : ""}`}>
+            <div className={`col-lg-8 page-title-copy${topPadding ? " page-title-copy-top-padding" : ""}`}>
               <h1 className="heading-title">{title}</h1>
               {subtitle ? <p className="heading-title h5 mb-3">{subtitle}</p> : null}
               {description ? <p className="mb-0">{description}</p> : null}

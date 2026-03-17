@@ -23,7 +23,7 @@ export default async function SectorsPage() {
           <div className="heading position-relative">
             <div className="container">
               <div className="row d-flex justify-content-center text-center">
-                <div className="col-lg-8 mt-5 pt-5 pb-4">
+                <div className="col-lg-8 sectors-hero-copy">
                   <h1 className="heading-title sectors-hero-title text-white">Investment Sectors</h1>
                   <p className="mb-0 sectors-hero-subtitle text-white">
                     Browse sector opportunities and flagship projects curated for the Sri Lanka
