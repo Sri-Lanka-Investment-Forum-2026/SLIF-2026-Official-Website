@@ -1,4 +1,4 @@
-# SLIF Next
+# Sri Lanka Investment Forum 2026
 
 Next.js 15 application for the Sri Lanka Investment Forum 2026 website and internal content admin.
 
@@ -102,21 +102,21 @@ The seed script applies the schema, clears content collections, ensures the init
 
 Copy `.env.example` to `.env` and fill in the values for your environment.
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `POCKETBASE_URL` | Yes | Base URL for PocketBase. Defaults to `http://127.0.0.1:8090` when unset. |
-| `POCKETBASE_SUPERUSER_EMAIL` | For schema/seed/admin bootstrap | PocketBase superuser used by setup scripts and privileged writes. |
-| `POCKETBASE_SUPERUSER_PASSWORD` | For schema/seed/admin bootstrap | Password for the PocketBase superuser. |
-| `SECTORS_PAGE_PUBLISHED` | No | Enables public sector pages and related navigation. Defaults to `false`. |
-| `MEDIA_PUBLIC_BASE_URL` | Yes | Public base URL used to generate/validate media and brochure links. |
-| `MINIO_ENDPOINT` | For uploads | S3 API endpoint for MinIO or compatible object storage. |
-| `MINIO_REGION` | No | Storage region. Defaults to `us-east-1`. |
-| `MINIO_BUCKET` | For uploads | Bucket used for uploaded assets. |
-| `MINIO_ACCESS_KEY` | For uploads | Storage access key. |
-| `MINIO_SECRET_KEY` | For uploads | Storage secret key. |
-| `ADMIN_EMAIL` | Recommended | Email for the initial SLIF admin user. |
-| `ADMIN_PASSWORD` | Recommended | Password for the initial SLIF admin user. |
-| `ADMIN_NAME` | No | Display name for the initial admin. Defaults to `SLIF Admin`. |
+| Variable                        | Required                        | Purpose                                                                  |
+| ------------------------------- | ------------------------------- | ------------------------------------------------------------------------ |
+| `POCKETBASE_URL`                | Yes                             | Base URL for PocketBase. Defaults to `http://127.0.0.1:8090` when unset. |
+| `POCKETBASE_SUPERUSER_EMAIL`    | For schema/seed/admin bootstrap | PocketBase superuser used by setup scripts and privileged writes.        |
+| `POCKETBASE_SUPERUSER_PASSWORD` | For schema/seed/admin bootstrap | Password for the PocketBase superuser.                                   |
+| `SECTORS_PAGE_PUBLISHED`        | No                              | Enables public sector pages and related navigation. Defaults to `false`. |
+| `MEDIA_PUBLIC_BASE_URL`         | Yes                             | Public base URL used to generate/validate media and brochure links.      |
+| `MINIO_ENDPOINT`                | For uploads                     | S3 API endpoint for MinIO or compatible object storage.                  |
+| `MINIO_REGION`                  | No                              | Storage region. Defaults to `us-east-1`.                                 |
+| `MINIO_BUCKET`                  | For uploads                     | Bucket used for uploaded assets.                                         |
+| `MINIO_ACCESS_KEY`              | For uploads                     | Storage access key.                                                      |
+| `MINIO_SECRET_KEY`              | For uploads                     | Storage secret key.                                                      |
+| `ADMIN_EMAIL`                   | Recommended                     | Email for the initial SLIF admin user.                                   |
+| `ADMIN_PASSWORD`                | Recommended                     | Password for the initial SLIF admin user.                                |
+| `ADMIN_NAME`                    | No                              | Display name for the initial admin. Defaults to `SLIF Admin`.            |
 
 ## Local Development
 
@@ -175,19 +175,19 @@ Open:
 
 ## Scripts
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the Next.js dev server |
-| `npm run build` | Build production output |
-| `npm run start` | Run the production server |
-| `npm run check` | Generate route types and run TypeScript type checking |
-| `npm test` | Run Node test suite |
-| `npm run pb:schema` | Apply PocketBase schema |
-| `npm run pb:bootstrap-admin` | Create or update the configured initial admin |
-| `npm run pb:setup` | Apply schema and bootstrap admin |
-| `npm run pb:seed` | Reset/import bundled JSON content into PocketBase |
-| `npm run pb:setup:seed` | Apply schema, bootstrap admin, then seed content |
-| `npm run media:check` | HEAD-check registered media asset URLs |
+| Command                      | Purpose                                               |
+| ---------------------------- | ----------------------------------------------------- |
+| `npm run dev`                | Start the Next.js dev server                          |
+| `npm run build`              | Build production output                               |
+| `npm run start`              | Run the production server                             |
+| `npm run check`              | Generate route types and run TypeScript type checking |
+| `npm test`                   | Run Node test suite                                   |
+| `npm run pb:schema`          | Apply PocketBase schema                               |
+| `npm run pb:bootstrap-admin` | Create or update the configured initial admin         |
+| `npm run pb:setup`           | Apply schema and bootstrap admin                      |
+| `npm run pb:seed`            | Reset/import bundled JSON content into PocketBase     |
+| `npm run pb:setup:seed`      | Apply schema, bootstrap admin, then seed content      |
+| `npm run media:check`        | HEAD-check registered media asset URLs                |
 
 ## Testing
 
@@ -242,4 +242,3 @@ tests/               Node test suite
 - Privileged writes fall back to a PocketBase superuser client when an authenticated admin session is not available.
 - Media validation distinguishes between external URLs and URLs rooted at `MEDIA_PUBLIC_BASE_URL`.
 - Legacy routes like `/project.html?id=...` and `/sectors/sector.html?sector=...` are redirected into modern routes.
-
