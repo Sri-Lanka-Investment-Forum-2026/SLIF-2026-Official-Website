@@ -34,7 +34,7 @@ const uploadPolicies: Record<string, UploadPolicy> = {
     ],
   }),
   projects: createPolicy({
-    extensions: ["jpg", "jpeg", "png", "webp", "gif", "pdf", "mp4", "webm", "mov", "m4v"],
+    extensions: ["jpg", "jpeg", "png", "webp", "gif", "pdf", "mp4", "webm", "mov", "m4v", "doc", "docx", "xls", "xlsx"],
     mimeTypes: [
       "image/jpeg",
       "image/png",
@@ -45,6 +45,10 @@ const uploadPolicies: Record<string, UploadPolicy> = {
       "video/webm",
       "video/quicktime",
       "video/x-m4v",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ],
   }),
   sectors: createPolicy({
