@@ -121,27 +121,33 @@ export default async function SectorDetailPage({
 
           <div className="container">
             <section className="slif-section-modern">
-              <div className="row align-items-start g-5">
-                <div className="col-lg-6">
-                  <h2 className="section-title mb-4">Sector Overview</h2>
-                  <div className="text-muted">
-                    {sector.overviewParagraphs.map((item: any) => (
-                      <p key={item.id}>{item.value}</p>
-                    ))}
+              {(() => {
+                const hasOverviewImage = !!(sector.imageUrl ?? sector.heroImageUrl);
+                return (
+                  <div className={`row align-items-start g-5${!hasOverviewImage ? " justify-content-center" : ""}`}>
+                    <div className={hasOverviewImage ? "col-lg-6" : "col-12 text-center"}>
+                      <h2 className="section-title mb-4">Sector Overview</h2>
+                      <div className="text-muted">
+                        {sector.overviewParagraphs.map((item: any) => (
+                          <p key={item.id}>{item.value}</p>
+                        ))}
+                      </div>
+                    </div>
+                    {hasOverviewImage ? (
+                      <div className="col-lg-6">
+                        <div className="slif-glass-image">
+                          <img
+                            src={overviewImage}
+                            className="img-fluid rounded-4"
+                            alt={`${sector.name} overview`}
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
-                </div>
-
-                <div className="col-lg-6">
-                  <div className="slif-glass-image">
-                    <img
-                      src={overviewImage}
-                      className="img-fluid rounded-4"
-                      alt={`${sector.name} overview`}
-                      loading="lazy"
-                    />
-                  </div>
-                </div>
-              </div>
+                );
+              })()}
             </section>
 
             <section className="slif-section-modern">

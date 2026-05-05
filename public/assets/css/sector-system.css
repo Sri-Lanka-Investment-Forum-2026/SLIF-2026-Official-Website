@@ -697,6 +697,10 @@
 
 .slif-project-actions .btn {
   min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .slif-brochure-modal-backdrop {

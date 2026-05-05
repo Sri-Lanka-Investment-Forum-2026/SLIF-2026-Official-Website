@@ -125,6 +125,15 @@ export function ProjectEditor({ initialValue, sectors }: ProjectEditorProps) {
             />
           </div>
           <div className="col-md-6">
+            <MediaInput
+              label="Revenue Model URL/PDF"
+              value={form.watch("revenueModelUrl") ?? ""}
+              onChange={(value) => form.setValue("revenueModelUrl", value, { shouldDirty: true })}
+              folder="projects"
+              accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            />
+          </div>
+          <div className="col-md-6">
             <label className="form-label">More info URL</label>
             <input className="form-control" {...form.register("moreInfoUrl")} />
           </div>

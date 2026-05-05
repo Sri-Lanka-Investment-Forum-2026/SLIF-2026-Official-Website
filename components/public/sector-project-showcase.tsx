@@ -19,6 +19,7 @@ type ProjectHighlight = {
 
 type SectorProject = {
   brochureUrl: string | null;
+  revenueModelUrl: string | null;
   description: string | null;
   id: string;
   media: Array<{
@@ -162,13 +163,6 @@ export function SectorProjectShowcase({
                 ) : null}
 
                 <div className="slif-project-actions">
-                  <Link
-                    href="mailto:readytoinvest@boi.lk?subject=Inquiry%20about%20investment%20opportunities&body=I%20am%20interested%20in%20learning%20more%20about%20the%20investment%20opportunities%20available.%20Please%20provide%20me%20with%20more%20information."
-                    className="btn btn-primary"
-                  >
-                    Contact Investment Team{" "}
-                    <i className="bi bi-arrow-right ms-1" />
-                  </Link>
                   {hasRenderableBrochure(project.brochureUrl) ? (
                     <button
                       type="button"
@@ -182,6 +176,23 @@ export function SectorProjectShowcase({
                       View Project Brochure
                     </button>
                   ) : null}
+                  {hasRenderableBrochure(project.revenueModelUrl) ? (
+                    <a
+                      href={project.revenueModelUrl}
+                      className="btn btn-outline-primary"
+                      download
+                      aria-label={`Download revenue model for ${project.title}`}
+                    >
+                      Download Revenue Model
+                    </a>
+                  ) : null}
+                  <Link
+                    href="mailto:readytoinvest@boi.lk?subject=Inquiry%20about%20investment%20opportunities&body=I%20am%20interested%20in%20learning%20more%20about%20the%20investment%20opportunities%20available.%20Please%20provide%20me%20with%20more%20information."
+                    className="btn btn-primary"
+                  >
+                    Contact Investment Team{" "}
+                    <i className="bi bi-arrow-right ms-1" />
+                  </Link>
                 </div>
               </div>
             </article>

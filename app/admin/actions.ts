@@ -159,6 +159,7 @@ export async function saveProjectAction(input: ProjectInput) {
   await Promise.all([
     ...parsed.media.map((item) => registerMediaUrl(item.url, { altText: item.altText })),
     registerMediaUrl(parsed.brochureUrl),
+    registerMediaUrl(parsed.revenueModelUrl),
     registerMediaUrl(parsed.videoUrl),
     registerMediaUrl(parsed.heroVideoUrl),
   ]);
