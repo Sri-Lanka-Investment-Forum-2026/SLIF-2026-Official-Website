@@ -13,7 +13,7 @@ export function SiteFooter() {
               <div className="footer-contact pt-3">
                 <p>Level 24, West Tower, World Trade Centre, Colombo 01</p>
                 <p>
-                  <strong>Email:</strong> <a href="mailto:slif2026@boi.lk">slif2026@boi.lk</a>
+                  <strong>Email:</strong> <a href="mailto:readytoinvest@boi.lk">readytoinvest@boi.lk</a>
                 </p>
                 <p>
                   <strong>Website:</strong>{" "}
