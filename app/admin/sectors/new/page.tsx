@@ -10,6 +10,7 @@ const emptySector: SectorInput = {
   published: true,
   name: "",
   tagline: "",
+  flagshipBadgeLabel: "",
   heroImageUrl: "",
   imageUrl: "",
   seoTitle: "",

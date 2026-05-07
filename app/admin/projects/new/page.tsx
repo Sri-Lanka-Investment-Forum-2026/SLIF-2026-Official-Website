@@ -12,6 +12,8 @@ const emptyProject: ProjectInput = {
   sortOrder: 0,
   published: true,
   type: "flagship",
+  flagshipBadgeLabel: "",
+  statusBadgeLabel: "",
   title: "",
   subTitle: "",
   description: "",

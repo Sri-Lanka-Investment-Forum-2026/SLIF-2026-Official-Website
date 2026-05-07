@@ -31,6 +31,8 @@ type SectorProject = {
   stats: ProjectStat[];
   highlights: ProjectHighlight[];
   subTitle: string | null;
+  flagshipBadgeLabel: string | null;
+  statusBadgeLabel: string | null;
   title: string;
   type: string | null;
 };
@@ -104,6 +106,10 @@ export function SectorProjectShowcase({
         {visibleProjects.map((project) => {
           const image = toSafeMediaUrl(project.media[0]?.url, fallbackImage);
           const isFlagship = project.type?.toLowerCase() === "flagship";
+          const flagshipBadgeLabel =
+            project.flagshipBadgeLabel?.trim() ||
+            (isFlagship ? "Flagship Project" : "");
+          const statusBadgeLabel = project.statusBadgeLabel?.trim() ?? "";
           const imageAlt =
             project.media[0]?.altText?.trim() ||
             `${project.title} project preview`;
@@ -111,8 +117,19 @@ export function SectorProjectShowcase({
           return (
             <article key={project.id} className="slif-project-feature-card">
               <div className="slif-project-media">
-                {isFlagship ? (
-                  <span className="slif-project-badge">Flagship Project</span>
+                {flagshipBadgeLabel || statusBadgeLabel ? (
+                  <div className="slif-project-badges">
+                    {flagshipBadgeLabel ? (
+                      <span className="slif-project-badge slif-project-badge-primary">
+                        {flagshipBadgeLabel}
+                      </span>
+                    ) : null}
+                    {statusBadgeLabel ? (
+                      <span className="slif-project-badge slif-project-badge-status">
+                        {statusBadgeLabel}
+                      </span>
+                    ) : null}
+                  </div>
                 ) : null}
                 <div className="slif-media-frame">
                   <img

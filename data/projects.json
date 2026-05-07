@@ -3,6 +3,8 @@
     {
       "id": "agri-001",
       "type": "flagship",
+      "flagshipBadgeLabel": "Flagship Project",
+      "statusBadgeLabel": "Awaits for RFP by NLDB",
       "title": "Dairy & Fodder Farming",
       "subTitle": "Milk the Potential: Invest in the Future of Dairy",
       "description": "An investment opportunity to develop fully integrated dairy farms in Sri Lanka with dedicated fodder cultivation. The project targets the growing local dairy market exceeding USD 250 million annually while enabling export opportunities. Designed to modernize Sri Lanka’s dairy and livestock sector, the initiative supports productivity improvements, consistent milk supply, and value addition across the dairy value chain.",

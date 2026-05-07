@@ -89,6 +89,11 @@ export function SectorEditor({ initialValue }: SectorEditorProps) {
           <label className="form-label">Tagline</label>
           <input className="form-control" {...form.register("tagline")} />
         </div>
+        <div className="col-md-4">
+          <label className="form-label">Sector badge label</label>
+          <input className="form-control" {...form.register("flagshipBadgeLabel")} />
+          <div className="form-text">Shown on the sector card when filled.</div>
+        </div>
         <div className="col-md-2">
           <label className="form-label">Sort order</label>
           <input

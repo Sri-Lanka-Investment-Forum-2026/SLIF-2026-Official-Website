@@ -90,6 +90,16 @@ export function ProjectEditor({ initialValue, sectors }: ProjectEditorProps) {
           <label className="form-label">Type</label>
           <input className="form-control" {...form.register("type")} />
         </div>
+        <div className="col-md-3">
+          <label className="form-label">Flagship badge label</label>
+          <input className="form-control" {...form.register("flagshipBadgeLabel")} />
+          <div className="form-text">Defaults to Flagship Project when type is flagship.</div>
+        </div>
+        <div className="col-md-3">
+          <label className="form-label">Status badge label</label>
+          <input className="form-control" {...form.register("statusBadgeLabel")} />
+          <div className="form-text">Shown beside the flagship badge.</div>
+        </div>
         <div className="col-md-1">
           <label className="form-label">Order</label>
           <input className="form-control" type="number" {...form.register("sortOrder", { valueAsNumber: true })} />
