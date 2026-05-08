@@ -40,6 +40,11 @@ export function ProjectEditor({ initialValue, sectors }: ProjectEditorProps) {
     name: "stats",
   });
 
+  const ribbons = useFieldArray({
+    control: form.control,
+    name: "ribbons",
+  });
+
   const submit = form.handleSubmit((values) => {
     setError(null);
 
@@ -94,11 +99,6 @@ export function ProjectEditor({ initialValue, sectors }: ProjectEditorProps) {
           <label className="form-label">Flagship badge label</label>
           <input className="form-control" {...form.register("flagshipBadgeLabel")} />
           <div className="form-text">Defaults to Flagship Project when type is flagship.</div>
-        </div>
-        <div className="col-md-3">
-          <label className="form-label">Status badge label</label>
-          <input className="form-control" {...form.register("statusBadgeLabel")} />
-          <div className="form-text">Shown beside the flagship badge.</div>
         </div>
         <div className="col-md-1">
           <label className="form-label">Order</label>
@@ -233,6 +233,63 @@ export function ProjectEditor({ initialValue, sectors }: ProjectEditorProps) {
                 </div>
                 <div className="col-md-2">
                   <button type="button" className="btn btn-outline-danger w-100" onClick={() => stats.remove(index)}>
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="admin-form-section">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <h2 className="h4 mb-0">Ribbons</h2>
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm"
+            onClick={() => ribbons.append({ label: "", color: "" })}
+          >
+            Add ribbon
+          </button>
+        </div>
+        <div className="d-grid gap-3">
+          {ribbons.fields.map((field, index) => (
+            <div key={field.id} className="admin-array-card">
+              <div className="row g-3 align-items-end">
+                <div className="col-md-7">
+                  <label className="form-label">Label</label>
+                  <input
+                    className="form-control"
+                    {...form.register(`ribbons.${index}.label`)}
+                    placeholder="e.g. Priority Investment"
+                  />
+                </div>
+                <div className="col-md-3">
+                  <label className="form-label">Color</label>
+                  <div className="input-group">
+                    <input
+                      type="color"
+                      className="form-control form-control-color"
+                      style={{ maxWidth: "3rem" }}
+                      value={form.watch(`ribbons.${index}.color`) || "#F8463F"}
+                      onChange={(e) =>
+                        form.setValue(`ribbons.${index}.color`, e.target.value, { shouldDirty: true })
+                      }
+                    />
+                    <input
+                      className="form-control"
+                      {...form.register(`ribbons.${index}.color`)}
+                      placeholder="#F8463F"
+                    />
+                  </div>
+                </div>
+                <div className="col-md-2">
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger w-100"
+                    onClick={() => ribbons.remove(index)}
+                  >
                     Remove
                   </button>
                 </div>

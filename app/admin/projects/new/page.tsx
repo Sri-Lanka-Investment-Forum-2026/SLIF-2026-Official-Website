@@ -13,7 +13,6 @@ const emptyProject: ProjectInput = {
   published: true,
   type: "flagship",
   flagshipBadgeLabel: "",
-  statusBadgeLabel: "",
   title: "",
   subTitle: "",
   description: "",
@@ -25,6 +24,7 @@ const emptyProject: ProjectInput = {
   stats: [],
   highlights: [],
   financialItems: [],
+  ribbons: [],
 };
 
 export default async function NewProjectPage() {

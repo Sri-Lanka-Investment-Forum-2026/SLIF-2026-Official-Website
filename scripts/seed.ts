@@ -37,7 +37,6 @@ type RawProject = {
   id: string;
   type?: string;
   flagshipBadgeLabel?: string;
-  statusBadgeLabel?: string;
   title: string;
   subTitle?: string;
   description?: string;
@@ -258,7 +257,6 @@ const importProjects = async (
           published: true,
           type: asNullable(project.type),
           flagshipBadgeLabel: asNullable(project.flagshipBadgeLabel),
-          statusBadgeLabel: asNullable(project.statusBadgeLabel),
           title: project.title,
           subTitle: asNullable(project.subTitle),
           description: asNullable(project.description),

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useState } from "react";
+import React, { startTransition, useState } from "react";
 
 import { ProjectBrochureDialog } from "@/components/public/project-brochure-dialog";
 import { hasRenderableBrochure, toSafeMediaUrl } from "@/lib/utils";
@@ -32,7 +32,7 @@ type SectorProject = {
   highlights: ProjectHighlight[];
   subTitle: string | null;
   flagshipBadgeLabel: string | null;
-  statusBadgeLabel: string | null;
+  ribbons: Array<{ label: string; color: string | null }>;
   title: string;
   type: string | null;
 };
@@ -109,7 +109,6 @@ export function SectorProjectShowcase({
           const flagshipBadgeLabel =
             project.flagshipBadgeLabel?.trim() ||
             (isFlagship ? "Flagship Project" : "");
-          const statusBadgeLabel = project.statusBadgeLabel?.trim() ?? "";
           const imageAlt =
             project.media[0]?.altText?.trim() ||
             `${project.title} project preview`;
@@ -117,18 +116,27 @@ export function SectorProjectShowcase({
           return (
             <article key={project.id} className="slif-project-feature-card">
               <div className="slif-project-media">
-                {flagshipBadgeLabel || statusBadgeLabel ? (
+                {flagshipBadgeLabel ? (
                   <div className="slif-project-badges">
-                    {flagshipBadgeLabel ? (
-                      <span className="slif-project-badge slif-project-badge-primary">
-                        {flagshipBadgeLabel}
+                    <span className="slif-project-badge slif-project-badge-primary">
+                      {flagshipBadgeLabel}
+                    </span>
+                  </div>
+                ) : null}
+                {project.ribbons.length > 0 ? (
+                  <div className="ribbon">
+                    {project.ribbons.map((ribbon, i) => (
+                      <span
+                        key={i}
+                        style={
+                          ribbon.color
+                            ? ({ "--ribbon-color": ribbon.color } as React.CSSProperties)
+                            : undefined
+                        }
+                      >
+                        {ribbon.label}
                       </span>
-                    ) : null}
-                    {statusBadgeLabel ? (
-                      <span className="slif-project-badge slif-project-badge-status">
-                        {statusBadgeLabel}
-                      </span>
-                    ) : null}
+                    ))}
                   </div>
                 ) : null}
                 <div className="slif-media-frame">

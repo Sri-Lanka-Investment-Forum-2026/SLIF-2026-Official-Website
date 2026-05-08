@@ -65,7 +65,7 @@ export const projectInputSchema = z.object({
   published: z.boolean().default(true),
   type: optionalString,
   flagshipBadgeLabel: optionalString,
-  statusBadgeLabel: optionalString,
+  ribbons: z.array(z.object({ label: requiredString, color: optionalString })).default([]),
   title: requiredString,
   subTitle: optionalString,
   description: optionalString,

@@ -134,16 +134,18 @@ async function getProjectChildren(pb: PocketBase, projectIds: string[]) {
       statsByProject: new Map<string, any[]>(),
       highlightsByProject: new Map<string, any[]>(),
       financialsByProject: new Map<string, any[]>(),
+      ribbonsByProject: new Map<string, any[]>(),
     };
   }
 
   const filter = buildRelationOrFilter("project", projectIds);
 
-  const [media, stats, highlights, financialItems] = await Promise.all([
+  const [media, stats, highlights, financialItems, ribbons] = await Promise.all([
     getFullList(pb, "project_media", { filter, sort: "sortOrder" }),
     getFullList(pb, "project_stats", { filter, sort: "sortOrder" }),
     getFullList(pb, "project_highlights", { filter, sort: "sortOrder" }),
     getFullList(pb, "project_financial_items", { filter, sort: "sortOrder" }),
+    getFullList(pb, "project_ribbons", { filter, sort: "sortOrder" }),
   ]);
 
   const toGroupedMap = (records: any[]) =>
@@ -160,12 +162,13 @@ async function getProjectChildren(pb: PocketBase, projectIds: string[]) {
     statsByProject: toGroupedMap(stats),
     highlightsByProject: toGroupedMap(highlights),
     financialsByProject: toGroupedMap(financialItems),
+    ribbonsByProject: toGroupedMap(ribbons),
   };
 }
 
 async function hydrateProjects(pb: PocketBase, projects: any[], sectorMap: Map<string, any>) {
   const projectIds = uniqueIds(projects);
-  const { mediaByProject, statsByProject, highlightsByProject, financialsByProject } =
+  const { mediaByProject, statsByProject, highlightsByProject, financialsByProject, ribbonsByProject } =
     await getProjectChildren(pb, projectIds);
 
   return projects.map((project) => ({
@@ -177,7 +180,8 @@ async function hydrateProjects(pb: PocketBase, projects: any[], sectorMap: Map<s
     published: Boolean(project.published),
     type: project.type ?? null,
     flagshipBadgeLabel: project.flagshipBadgeLabel ?? null,
-    statusBadgeLabel: project.statusBadgeLabel ?? null,
+    ribbonLabel: project.ribbonLabel ?? null,
+    ribbonColor: project.ribbonColor ?? null,
     title: project.title,
     subTitle: project.subTitle ?? null,
     description: project.description ?? null,
@@ -196,6 +200,11 @@ async function hydrateProjects(pb: PocketBase, projects: any[], sectorMap: Map<s
     stats: (statsByProject.get(project.id) ?? []).map(mapStatItem),
     highlights: (highlightsByProject.get(project.id) ?? []).map(mapValueItem),
     financialItems: (financialsByProject.get(project.id) ?? []).map(mapValueItem),
+    ribbons: (ribbonsByProject.get(project.id) ?? []).map((item: any) => ({
+      id: item.id,
+      label: item.label,
+      color: item.color ?? null,
+    })),
   }));
 }
 
@@ -302,6 +311,7 @@ async function replaceProjectChildren(pb: PocketBase, projectId: string, input: 
     deleteChildren(pb, "project_stats", "project", projectId),
     deleteChildren(pb, "project_highlights", "project", projectId),
     deleteChildren(pb, "project_financial_items", "project", projectId),
+    deleteChildren(pb, "project_ribbons", "project", projectId),
   ]);
 
   await Promise.all([
@@ -342,6 +352,17 @@ async function replaceProjectChildren(pb: PocketBase, projectId: string, input: 
         {
           project: projectId,
           value,
+          sortOrder: index,
+        },
+        { requestKey: null },
+      ),
+    ),
+    ...input.ribbons.map((item: any, index: number) =>
+      pb.collection("project_ribbons").create(
+        {
+          project: projectId,
+          label: item.label,
+          color: asNullable(item.color),
           sortOrder: index,
         },
         { requestKey: null },
@@ -603,7 +624,8 @@ export const pocketbaseRepository = {
         published: hydrated.published,
         type: hydrated.type ?? "",
         flagshipBadgeLabel: hydrated.flagshipBadgeLabel ?? "",
-        statusBadgeLabel: hydrated.statusBadgeLabel ?? "",
+        ribbonLabel: hydrated.ribbonLabel ?? "",
+        ribbonColor: hydrated.ribbonColor ?? "",
         title: hydrated.title,
         subTitle: hydrated.subTitle ?? "",
         description: hydrated.description ?? "",
@@ -616,6 +638,7 @@ export const pocketbaseRepository = {
         stats: hydrated.stats.map((item: any) => ({ label: item.label, value: item.value })),
         highlights: hydrated.highlights.map((item: any) => item.value),
         financialItems: hydrated.financialItems.map((item: any) => item.value),
+        ribbons: hydrated.ribbons.map((item: any) => ({ label: item.label, color: item.color ?? "" })),
       };
     } catch {
       return null;
@@ -746,7 +769,6 @@ export const pocketbaseRepository = {
       published: input.published,
       type: asNullable(input.type),
       flagshipBadgeLabel: asNullable(input.flagshipBadgeLabel),
-      statusBadgeLabel: asNullable(input.statusBadgeLabel),
       title: input.title,
       subTitle: asNullable(input.subTitle),
       description: asNullable(input.description),
