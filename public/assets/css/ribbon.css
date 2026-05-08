@@ -10,14 +10,39 @@
   display: block;
   background: var(--ribbon-color, #F8463F);
   color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   white-space: nowrap;
-  padding: 9px 18px 9px 22px;
-  clip-path: polygon(16px 0%, 100% 0%, 100% 100%, 16px 100%, 0% 50%);
-  box-shadow: -3px 3px 10px rgba(248, 70, 63, 0.4);
+  padding: 11px 22px 11px 28px;
+  clip-path: polygon(22px 0%, 100% 0%, 100% 100%, 22px 100%, 0% 50%);
+  box-shadow: -3px 4px 14px rgba(248, 70, 63, 0.45);
   position: relative;
   margin-top: 10px;
+  overflow: hidden;
+}
+
+/* Sheen sweep: right → left */
+.ribbon span::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 110%;
+  width: 45%;
+  height: 140%;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 80%
+  );
+  transform: skewX(-15deg);
+  animation: ribbon-sheen 3s ease-in-out infinite;
+}
+
+@keyframes ribbon-sheen {
+  0%   { left: 110%; }
+  40%  { left: -60%; }
+  100% { left: -60%; }
 }

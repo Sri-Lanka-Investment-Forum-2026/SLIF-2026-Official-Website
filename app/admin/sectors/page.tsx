@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AdminShell } from "@/components/admin/admin-shell";
 import { deleteSectorAction } from "@/app/admin/actions";
+import { DeleteButton } from "@/components/admin/delete-button";
 import { getAllSectorsForAdmin } from "@/lib/content";
 import { requireAdmin } from "@/lib/auth-utils";
 
@@ -39,19 +40,21 @@ export default async function AdminSectorsPage() {
                     <div className="fw-semibold">{sector.name}</div>
                     <div className="small text-secondary">{sector.tagline}</div>
                   </td>
-                  <td>{sector.slug}</td>
+                  <td>
+                    <code className="text-secondary small">{sector.slug}</code>
+                  </td>
                   <td>{sector.projects.length}</td>
-                  <td>{sector.published ? "Published" : "Hidden"}</td>
+                  <td>
+                    <span className={`badge rounded-pill ${sector.published ? "bg-success" : "bg-secondary"}`}>
+                      {sector.published ? "Published" : "Hidden"}
+                    </span>
+                  </td>
                   <td className="text-end">
                     <div className="d-flex justify-content-end gap-2">
                       <Link href={`/admin/sectors/${sector.id}`} className="btn btn-outline-dark btn-sm">
                         Edit
                       </Link>
-                      <form action={deleteSectorAction.bind(null, sector.id)}>
-                        <button className="btn btn-outline-danger btn-sm" type="submit">
-                          Delete
-                        </button>
-                      </form>
+                      <DeleteButton action={deleteSectorAction.bind(null, sector.id)} />
                     </div>
                   </td>
                 </tr>

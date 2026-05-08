@@ -32,6 +32,7 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/css/main.css" />
         <link rel="stylesheet" href="/assets/css/sector-system.css" />
         <link rel="stylesheet" href="/assets/css/ribbon.css" />
+        <link rel="stylesheet" href="/assets/css/admin.css" />
       </head>
       <body>{children}</body>
     </html>
