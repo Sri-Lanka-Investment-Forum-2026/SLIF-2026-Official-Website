@@ -4,6 +4,7 @@ import { ZodError } from "zod";
 
 import { signIn, signOut } from "@/auth";
 import { dataRepository } from "@/lib/data/repository";
+import { logActivity } from "@/lib/audit-log";
 import { registerMediaUrl } from "@/lib/media";
 import {
   loginSchema,
@@ -95,13 +96,15 @@ export async function loginAction(
 }
 
 export async function logoutAction() {
-  await signOut({
-    redirectTo: "/admin/login",
-  });
+  try {
+    const user = await requireAdmin();
+    await logActivity({ adminId: user.id, adminEmail: user.email, adminName: user.name, action: "LOGOUT" });
+  } catch {}
+  await signOut({ redirectTo: "/admin/login" });
 }
 
 export async function saveSectorAction(input: SectorInput) {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   let parsed: SectorInput;
 
@@ -127,19 +130,40 @@ export async function saveSectorAction(input: SectorInput) {
 
   const { id: sectorId } = await dataRepository.saveSector(parsed);
 
+  logActivity({
+    adminId: admin.id,
+    adminEmail: admin.email,
+    adminName: admin.name,
+    action: input.id ? "UPDATE_SECTOR" : "CREATE_SECTOR",
+    entityType: "sector",
+    entityId: sectorId,
+    entityLabel: parsed.name,
+    details: { slug: parsed.slug, published: parsed.published },
+  });
+
   revalidatePublic("/", "/sectors", `/sectors/${parsed.slug}`, "/admin", "/admin/sectors");
 
   return { ok: true as const, id: sectorId };
 }
 
 export async function deleteSectorAction(id: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const sector = await dataRepository.getSectorForAdmin(id);
   await dataRepository.deleteSector(id);
+  logActivity({
+    adminId: admin.id,
+    adminEmail: admin.email,
+    adminName: admin.name,
+    action: "DELETE_SECTOR",
+    entityType: "sector",
+    entityId: id,
+    entityLabel: sector?.name ?? id,
+  });
   revalidatePublic("/", "/sectors", "/admin", "/admin/sectors");
 }
 
 export async function saveProjectAction(input: ProjectInput) {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   let parsed: ProjectInput;
 
@@ -166,6 +190,17 @@ export async function saveProjectAction(input: ProjectInput) {
 
   const { id: projectId, sectorSlug } = await dataRepository.saveProject(parsed);
 
+  logActivity({
+    adminId: admin.id,
+    adminEmail: admin.email,
+    adminName: admin.name,
+    action: input.id ? "UPDATE_PROJECT" : "CREATE_PROJECT",
+    entityType: "project",
+    entityId: projectId,
+    entityLabel: parsed.title,
+    details: { slug: parsed.slug, published: parsed.published },
+  });
+
   revalidatePublic(
     "/sectors",
     `/sectors/${sectorSlug}`,
@@ -178,13 +213,23 @@ export async function saveProjectAction(input: ProjectInput) {
 }
 
 export async function deleteProjectAction(id: string) {
-  await requireAdmin();
+  const admin = await requireAdmin();
+  const project = await dataRepository.getProjectForAdmin(id);
   await dataRepository.deleteProject(id);
+  logActivity({
+    adminId: admin.id,
+    adminEmail: admin.email,
+    adminName: admin.name,
+    action: "DELETE_PROJECT",
+    entityType: "project",
+    entityId: id,
+    entityLabel: project?.title ?? id,
+  });
   revalidatePublic("/sectors", "/admin", "/admin/projects");
 }
 
 export async function saveSpeakerSettingsAction(input: SpeakerSettingsInput) {
-  await requireAdmin();
+  const admin = await requireAdmin();
 
   let parsed: SpeakerSettingsInput;
 
@@ -209,6 +254,16 @@ export async function saveSpeakerSettingsAction(input: SpeakerSettingsInput) {
   );
 
   await dataRepository.saveSpeakerSettings(parsed);
+
+  const totalSpeakers = parsed.sessions.reduce((sum, s) => sum + s.speakers.length, 0);
+  logActivity({
+    adminId: admin.id,
+    adminEmail: admin.email,
+    adminName: admin.name,
+    action: "UPDATE_SPEAKERS",
+    entityType: "speakers",
+    entityLabel: `${parsed.sessions.length} session${parsed.sessions.length !== 1 ? "s" : ""}, ${totalSpeakers} speaker${totalSpeakers !== 1 ? "s" : ""}`,
+  });
 
   revalidatePublic("/", "/admin", "/admin/speakers");
 

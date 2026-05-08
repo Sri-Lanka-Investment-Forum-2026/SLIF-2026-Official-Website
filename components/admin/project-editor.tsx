@@ -148,6 +148,15 @@ export function ProjectEditor({ initialValue, sectors }: ProjectEditorProps) {
             <input className="form-control" {...form.register("moreInfoUrl")} />
           </div>
           <div className="col-md-6">
+            <label className="form-label">EOI page URL</label>
+            <input
+              className="form-control"
+              placeholder="https://..."
+              {...form.register("eoiUrl")}
+            />
+            <div className="form-text">Link shown as "Visit EOI Page" on the project card.</div>
+          </div>
+          <div className="col-md-6">
             <MediaInput
               label="Video URL"
               value={form.watch("videoUrl") ?? ""}

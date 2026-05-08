@@ -20,6 +20,7 @@ type ProjectHighlight = {
 type SectorProject = {
   brochureUrl: string | null;
   revenueModelUrl: string | null;
+  eoiUrl: string | null;
   description: string | null;
   id: string;
   media: Array<{
@@ -209,6 +210,18 @@ export function SectorProjectShowcase({
                       aria-label={`Download revenue model for ${project.title}`}
                     >
                       Download Revenue Model
+                    </a>
+                  ) : null}
+                  {project.eoiUrl ? (
+                    <a
+                      href={project.eoiUrl}
+                      className="btn btn-primary"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Visit EOI page for ${project.title}`}
+                    >
+                      Visit EOI Page{" "}
+                      <i className="bi bi-arrow-right ms-1" />
                     </a>
                   ) : null}
                   <Link

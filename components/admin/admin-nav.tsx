@@ -12,6 +12,7 @@ const navLinks: NavLink[] = [
   { href: "/admin/sectors", label: "Sectors", icon: "bi-collection" },
   { href: "/admin/projects", label: "Projects", icon: "bi-building" },
   { href: "/admin/speakers", label: "Speakers", icon: "bi-people" },
+  { href: "/admin/activity", label: "Activity", icon: "bi-clock-history" },
 ];
 
 function initials(name?: string | null, email?: string | null): string {

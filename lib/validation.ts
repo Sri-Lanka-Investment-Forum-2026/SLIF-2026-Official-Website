@@ -72,6 +72,7 @@ export const projectInputSchema = z.object({
   brochureUrl: optionalAbsoluteUrl,
   revenueModelUrl: optionalAbsoluteUrl,
   moreInfoUrl: optionalNavigationUrl,
+  eoiUrl: optionalNavigationUrl,
   videoUrl: optionalMediaUrl,
   heroVideoUrl: optionalMediaUrl,
   media: z

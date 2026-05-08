@@ -188,6 +188,7 @@ async function hydrateProjects(pb: PocketBase, projects: any[], sectorMap: Map<s
     brochureUrl: project.brochureUrl ?? null,
     revenueModelUrl: project.revenueModelUrl ?? null,
     moreInfoUrl: project.moreInfoUrl ?? null,
+    eoiUrl: project.eoiUrl ?? null,
     videoUrl: project.videoUrl ?? null,
     heroVideoUrl: project.heroVideoUrl ?? null,
     sector: sectorMap.get(project.sector),
@@ -632,6 +633,7 @@ export const pocketbaseRepository = {
         brochureUrl: hydrated.brochureUrl ?? "",
         revenueModelUrl: hydrated.revenueModelUrl ?? "",
         moreInfoUrl: hydrated.moreInfoUrl ?? "",
+        eoiUrl: hydrated.eoiUrl ?? "",
         videoUrl: hydrated.videoUrl ?? "",
         heroVideoUrl: hydrated.heroVideoUrl ?? "",
         media: hydrated.media.map((item: any) => ({ url: item.url, altText: item.altText ?? "" })),
@@ -775,6 +777,7 @@ export const pocketbaseRepository = {
       brochureUrl: asNullable(input.brochureUrl),
       revenueModelUrl: asNullable(input.revenueModelUrl),
       moreInfoUrl: asNullable(input.moreInfoUrl),
+      eoiUrl: asNullable(input.eoiUrl),
       videoUrl: asNullable(input.videoUrl),
       heroVideoUrl: asNullable(input.heroVideoUrl),
     };
@@ -898,5 +901,31 @@ export const pocketbaseRepository = {
       id: asset.id,
       publicUrl: asset.publicUrl,
     }));
+  },
+
+  async listActivityLogs({ page = 1, perPage = 50 }: { page?: number; perPage?: number } = {}) {
+    const pb = await getWriteClient();
+    const result = await pb.collection("admin_activity_logs").getList(page, perPage, {
+      sort: "-created",
+      requestKey: null,
+    });
+
+    return {
+      items: result.items.map((item) => ({
+        id: item.id,
+        created: item.created,
+        adminId: item.adminId,
+        adminEmail: item.adminEmail,
+        adminName: item.adminName,
+        action: item.action,
+        entityType: item.entityType,
+        entityId: item.entityId,
+        entityLabel: item.entityLabel,
+        details: item.details,
+      })),
+      totalItems: result.totalItems,
+      totalPages: result.totalPages,
+      page: result.page,
+    };
   },
 };
