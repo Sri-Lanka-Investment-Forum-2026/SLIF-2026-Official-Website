@@ -131,7 +131,9 @@ export function SectorProjectShowcase({
                         key={i}
                         style={
                           ribbon.color
-                            ? ({ "--ribbon-color": ribbon.color } as React.CSSProperties)
+                            ? ({
+                                "--ribbon-color": ribbon.color,
+                              } as React.CSSProperties)
                             : undefined
                         }
                       >
@@ -215,13 +217,12 @@ export function SectorProjectShowcase({
                   {project.eoiUrl ? (
                     <a
                       href={project.eoiUrl}
-                      className="btn btn-primary"
+                      className="btn btn-success"
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Visit EOI page for ${project.title}`}
                     >
-                      Visit EOI Page{" "}
-                      <i className="bi bi-arrow-right ms-1" />
+                      Visit EOI Page <i className="bi bi-arrow-right ms-1" />
                     </a>
                   ) : null}
                   <Link
