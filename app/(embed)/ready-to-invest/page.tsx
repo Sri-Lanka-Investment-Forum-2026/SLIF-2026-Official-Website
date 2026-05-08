@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 
 import { getPublishedSectors } from "@/lib/content";
-import { env } from "@/lib/env";
 import { toSafeMediaUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -13,10 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function ReadyToInvestPage() {
-  if (!env.sectorsPagePublished) {
-    notFound();
-  }
-
   const sectors = await getPublishedSectors();
   const projectCount = sectors.reduce((count, sector) => count + sector.projects.length, 0);
 
