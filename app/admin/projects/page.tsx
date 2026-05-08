@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AdminShell } from "@/components/admin/admin-shell";
 import { deleteProjectAction } from "@/app/admin/actions";
+import { DeleteButton } from "@/components/admin/delete-button";
 import { getAllProjectsForAdmin } from "@/lib/content";
 import { requireAdmin } from "@/lib/auth-utils";
 
@@ -40,18 +41,20 @@ export default async function AdminProjectsPage() {
                     <div className="small text-secondary">{project.slug}</div>
                   </td>
                   <td>{project.sector.name}</td>
-                  <td>{project.legacyId}</td>
-                  <td>{project.published ? "Published" : "Hidden"}</td>
+                  <td>
+                    <code className="text-secondary small">{project.legacyId}</code>
+                  </td>
+                  <td>
+                    <span className={`badge rounded-pill ${project.published ? "bg-success" : "bg-secondary"}`}>
+                      {project.published ? "Published" : "Hidden"}
+                    </span>
+                  </td>
                   <td className="text-end">
                     <div className="d-flex justify-content-end gap-2">
                       <Link href={`/admin/projects/${project.id}`} className="btn btn-outline-dark btn-sm">
                         Edit
                       </Link>
-                      <form action={deleteProjectAction.bind(null, project.id)}>
-                        <button className="btn btn-outline-danger btn-sm" type="submit">
-                          Delete
-                        </button>
-                      </form>
+                      <DeleteButton action={deleteProjectAction.bind(null, project.id)} />
                     </div>
                   </td>
                 </tr>

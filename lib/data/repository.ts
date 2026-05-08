@@ -1,5 +1,25 @@
 import { pocketbaseRepository } from "@/lib/data/pocketbase-repository";
 
+export type ActivityLogEntry = {
+  id: string;
+  created: string;
+  adminId: string;
+  adminEmail: string;
+  adminName: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  entityLabel: string;
+  details: string;
+};
+
+export type ActivityLogsPage = {
+  items: ActivityLogEntry[];
+  totalItems: number;
+  totalPages: number;
+  page: number;
+};
+
 export type MediaAssetUpsertInput = {
   publicUrl: string;
   objectKey: string | null;
@@ -31,6 +51,7 @@ export type DataRepository = {
   saveSpeakerSettings: (input: any) => Promise<void>;
   upsertMediaAsset: (input: MediaAssetUpsertInput) => Promise<any>;
   listMediaAssets: () => Promise<Array<{ id: string; publicUrl: string }>>;
+  listActivityLogs: (options?: { page?: number; perPage?: number }) => Promise<ActivityLogsPage>;
 };
 
 export const dataRepository: DataRepository = pocketbaseRepository;

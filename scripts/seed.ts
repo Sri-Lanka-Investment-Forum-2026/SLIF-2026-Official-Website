@@ -11,6 +11,7 @@ import { slugify } from "@/lib/utils";
 type RawSector = {
   name: string;
   tagline?: string;
+  flagshipBadgeLabel?: string;
   heroImage?: string;
   image?: string;
   overview?: string[];
@@ -35,6 +36,7 @@ type RawSector = {
 type RawProject = {
   id: string;
   type?: string;
+  flagshipBadgeLabel?: string;
   title: string;
   subTitle?: string;
   description?: string;
@@ -167,6 +169,7 @@ const importSectors = async (pb: any, sectors: Record<string, RawSector>) => {
         published: true,
         name: sector.name,
         tagline: asNullable(sector.tagline),
+        flagshipBadgeLabel: asNullable(sector.flagshipBadgeLabel),
         heroImageUrl: asNullable(sector.heroImage),
         imageUrl: asNullable(sector.image),
         seoTitle: asNullable(sector.seo?.title),
@@ -253,6 +256,7 @@ const importProjects = async (
           sortOrder: index,
           published: true,
           type: asNullable(project.type),
+          flagshipBadgeLabel: asNullable(project.flagshipBadgeLabel),
           title: project.title,
           subTitle: asNullable(project.subTitle),
           description: asNullable(project.description),

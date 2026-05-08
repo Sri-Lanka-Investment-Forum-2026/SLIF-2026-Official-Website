@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { startTransition, useState } from "react";
+import React, { startTransition, useState } from "react";
 
 import { ProjectBrochureDialog } from "@/components/public/project-brochure-dialog";
 import { hasRenderableBrochure, toSafeMediaUrl } from "@/lib/utils";
@@ -20,6 +20,7 @@ type ProjectHighlight = {
 type SectorProject = {
   brochureUrl: string | null;
   revenueModelUrl: string | null;
+  eoiUrl: string | null;
   description: string | null;
   id: string;
   media: Array<{
@@ -31,6 +32,8 @@ type SectorProject = {
   stats: ProjectStat[];
   highlights: ProjectHighlight[];
   subTitle: string | null;
+  flagshipBadgeLabel: string | null;
+  ribbons: Array<{ label: string; color: string | null }>;
   title: string;
   type: string | null;
 };
@@ -104,6 +107,9 @@ export function SectorProjectShowcase({
         {visibleProjects.map((project) => {
           const image = toSafeMediaUrl(project.media[0]?.url, fallbackImage);
           const isFlagship = project.type?.toLowerCase() === "flagship";
+          const flagshipBadgeLabel =
+            project.flagshipBadgeLabel?.trim() ||
+            (isFlagship ? "Flagship Project" : "");
           const imageAlt =
             project.media[0]?.altText?.trim() ||
             `${project.title} project preview`;
@@ -111,8 +117,28 @@ export function SectorProjectShowcase({
           return (
             <article key={project.id} className="slif-project-feature-card">
               <div className="slif-project-media">
-                {isFlagship ? (
-                  <span className="slif-project-badge">Flagship Project</span>
+                {flagshipBadgeLabel ? (
+                  <div className="slif-project-badges">
+                    <span className="slif-project-badge slif-project-badge-primary">
+                      {flagshipBadgeLabel}
+                    </span>
+                  </div>
+                ) : null}
+                {project.ribbons.length > 0 ? (
+                  <div className="ribbon">
+                    {project.ribbons.map((ribbon, i) => (
+                      <span
+                        key={i}
+                        style={
+                          ribbon.color
+                            ? ({ "--ribbon-color": ribbon.color } as React.CSSProperties)
+                            : undefined
+                        }
+                      >
+                        {ribbon.label}
+                      </span>
+                    ))}
+                  </div>
                 ) : null}
                 <div className="slif-media-frame">
                   <img
@@ -184,6 +210,18 @@ export function SectorProjectShowcase({
                       aria-label={`Download revenue model for ${project.title}`}
                     >
                       Download Revenue Model
+                    </a>
+                  ) : null}
+                  {project.eoiUrl ? (
+                    <a
+                      href={project.eoiUrl}
+                      className="btn btn-primary"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Visit EOI page for ${project.title}`}
+                    >
+                      Visit EOI Page{" "}
+                      <i className="bi bi-arrow-right ms-1" />
                     </a>
                   ) : null}
                   <Link

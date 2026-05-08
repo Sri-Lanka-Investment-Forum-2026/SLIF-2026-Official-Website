@@ -3,6 +3,10 @@ import { NextResponse } from "next/server";
 
 import { POCKETBASE_AUTH_COOKIE } from "@/lib/pocketbase";
 
+// Guard against open redirect: only allow same-origin relative /admin paths.
+const isSafeCallbackUrl = (url: string): boolean =>
+  url.startsWith("/admin") && !url.startsWith("//") && !url.includes(":");
+
 export function middleware(request: NextRequest) {
   const { nextUrl } = request;
   const isLoginPage = nextUrl.pathname === "/admin/login";
@@ -12,7 +16,9 @@ export function middleware(request: NextRequest) {
     const loginUrl = new URL("/admin/login", request.url);
     const callbackUrl = `${nextUrl.pathname}${nextUrl.search}`;
 
-    loginUrl.searchParams.set("callbackUrl", callbackUrl);
+    if (isSafeCallbackUrl(callbackUrl)) {
+      loginUrl.searchParams.set("callbackUrl", callbackUrl);
+    }
 
     return NextResponse.redirect(loginUrl);
   }

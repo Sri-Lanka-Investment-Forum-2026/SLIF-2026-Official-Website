@@ -12,6 +12,7 @@ const emptyProject: ProjectInput = {
   sortOrder: 0,
   published: true,
   type: "flagship",
+  flagshipBadgeLabel: "",
   title: "",
   subTitle: "",
   description: "",
@@ -23,6 +24,7 @@ const emptyProject: ProjectInput = {
   stats: [],
   highlights: [],
   financialItems: [],
+  ribbons: [],
 };
 
 export default async function NewProjectPage() {

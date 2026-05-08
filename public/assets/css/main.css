@@ -422,6 +422,26 @@ h6 {
   );
 }
 
+.sector-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  max-width: calc(100% - 32px);
+  padding: 0.42rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(16, 122, 92, 0.94);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
 .sector-title-wrap {
   position: absolute;
   inset: 0;

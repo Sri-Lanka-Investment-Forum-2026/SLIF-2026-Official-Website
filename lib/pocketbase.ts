@@ -114,9 +114,28 @@ export const signInWithPocketBase = async (email: string, password: string) => {
 
   await persistPocketBaseAuthCookie(pb);
 
-  return {
-    user: toAdminSessionUser(result.record),
-  };
+  const user = toAdminSessionUser(result.record);
+
+  // Fire-and-forget login audit log (inline to avoid circular dep with audit-log.ts)
+  createPocketBaseSuperuserClient()
+    .then((superPb) =>
+      superPb.collection("admin_activity_logs").create(
+        {
+          adminId: user.id,
+          adminEmail: user.email ?? "",
+          adminName: user.name ?? "",
+          action: "LOGIN",
+          entityType: "",
+          entityId: "",
+          entityLabel: "",
+          details: "",
+        },
+        { requestKey: null },
+      ),
+    )
+    .catch(() => {});
+
+  return { user };
 };
 
 export const signOutFromPocketBase = async () => {

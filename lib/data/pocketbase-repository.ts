@@ -59,6 +59,7 @@ const mapSectorBase = (sector: any) => ({
   published: Boolean(sector.published),
   name: sector.name,
   tagline: sector.tagline ?? null,
+  flagshipBadgeLabel: sector.flagshipBadgeLabel ?? null,
   heroImageUrl: sector.heroImageUrl ?? null,
   imageUrl: sector.imageUrl ?? null,
   seoTitle: sector.seoTitle ?? null,
@@ -133,16 +134,18 @@ async function getProjectChildren(pb: PocketBase, projectIds: string[]) {
       statsByProject: new Map<string, any[]>(),
       highlightsByProject: new Map<string, any[]>(),
       financialsByProject: new Map<string, any[]>(),
+      ribbonsByProject: new Map<string, any[]>(),
     };
   }
 
   const filter = buildRelationOrFilter("project", projectIds);
 
-  const [media, stats, highlights, financialItems] = await Promise.all([
+  const [media, stats, highlights, financialItems, ribbons] = await Promise.all([
     getFullList(pb, "project_media", { filter, sort: "sortOrder" }),
     getFullList(pb, "project_stats", { filter, sort: "sortOrder" }),
     getFullList(pb, "project_highlights", { filter, sort: "sortOrder" }),
     getFullList(pb, "project_financial_items", { filter, sort: "sortOrder" }),
+    getFullList(pb, "project_ribbons", { filter, sort: "sortOrder" }),
   ]);
 
   const toGroupedMap = (records: any[]) =>
@@ -159,12 +162,13 @@ async function getProjectChildren(pb: PocketBase, projectIds: string[]) {
     statsByProject: toGroupedMap(stats),
     highlightsByProject: toGroupedMap(highlights),
     financialsByProject: toGroupedMap(financialItems),
+    ribbonsByProject: toGroupedMap(ribbons),
   };
 }
 
 async function hydrateProjects(pb: PocketBase, projects: any[], sectorMap: Map<string, any>) {
   const projectIds = uniqueIds(projects);
-  const { mediaByProject, statsByProject, highlightsByProject, financialsByProject } =
+  const { mediaByProject, statsByProject, highlightsByProject, financialsByProject, ribbonsByProject } =
     await getProjectChildren(pb, projectIds);
 
   return projects.map((project) => ({
@@ -175,12 +179,16 @@ async function hydrateProjects(pb: PocketBase, projects: any[], sectorMap: Map<s
     sortOrder: project.sortOrder ?? 0,
     published: Boolean(project.published),
     type: project.type ?? null,
+    flagshipBadgeLabel: project.flagshipBadgeLabel ?? null,
+    ribbonLabel: project.ribbonLabel ?? null,
+    ribbonColor: project.ribbonColor ?? null,
     title: project.title,
     subTitle: project.subTitle ?? null,
     description: project.description ?? null,
     brochureUrl: project.brochureUrl ?? null,
     revenueModelUrl: project.revenueModelUrl ?? null,
     moreInfoUrl: project.moreInfoUrl ?? null,
+    eoiUrl: project.eoiUrl ?? null,
     videoUrl: project.videoUrl ?? null,
     heroVideoUrl: project.heroVideoUrl ?? null,
     sector: sectorMap.get(project.sector),
@@ -193,6 +201,11 @@ async function hydrateProjects(pb: PocketBase, projects: any[], sectorMap: Map<s
     stats: (statsByProject.get(project.id) ?? []).map(mapStatItem),
     highlights: (highlightsByProject.get(project.id) ?? []).map(mapValueItem),
     financialItems: (financialsByProject.get(project.id) ?? []).map(mapValueItem),
+    ribbons: (ribbonsByProject.get(project.id) ?? []).map((item: any) => ({
+      id: item.id,
+      label: item.label,
+      color: item.color ?? null,
+    })),
   }));
 }
 
@@ -299,6 +312,7 @@ async function replaceProjectChildren(pb: PocketBase, projectId: string, input: 
     deleteChildren(pb, "project_stats", "project", projectId),
     deleteChildren(pb, "project_highlights", "project", projectId),
     deleteChildren(pb, "project_financial_items", "project", projectId),
+    deleteChildren(pb, "project_ribbons", "project", projectId),
   ]);
 
   await Promise.all([
@@ -339,6 +353,17 @@ async function replaceProjectChildren(pb: PocketBase, projectId: string, input: 
         {
           project: projectId,
           value,
+          sortOrder: index,
+        },
+        { requestKey: null },
+      ),
+    ),
+    ...input.ribbons.map((item: any, index: number) =>
+      pb.collection("project_ribbons").create(
+        {
+          project: projectId,
+          label: item.label,
+          color: asNullable(item.color),
           sortOrder: index,
         },
         { requestKey: null },
@@ -532,6 +557,7 @@ export const pocketbaseRepository = {
         published: hydrated.published,
         name: hydrated.name,
         tagline: hydrated.tagline ?? "",
+        flagshipBadgeLabel: hydrated.flagshipBadgeLabel ?? "",
         heroImageUrl: hydrated.heroImageUrl ?? "",
         imageUrl: hydrated.imageUrl ?? "",
         seoTitle: hydrated.seoTitle ?? "",
@@ -598,18 +624,23 @@ export const pocketbaseRepository = {
         sortOrder: hydrated.sortOrder,
         published: hydrated.published,
         type: hydrated.type ?? "",
+        flagshipBadgeLabel: hydrated.flagshipBadgeLabel ?? "",
+        ribbonLabel: hydrated.ribbonLabel ?? "",
+        ribbonColor: hydrated.ribbonColor ?? "",
         title: hydrated.title,
         subTitle: hydrated.subTitle ?? "",
         description: hydrated.description ?? "",
         brochureUrl: hydrated.brochureUrl ?? "",
         revenueModelUrl: hydrated.revenueModelUrl ?? "",
         moreInfoUrl: hydrated.moreInfoUrl ?? "",
+        eoiUrl: hydrated.eoiUrl ?? "",
         videoUrl: hydrated.videoUrl ?? "",
         heroVideoUrl: hydrated.heroVideoUrl ?? "",
         media: hydrated.media.map((item: any) => ({ url: item.url, altText: item.altText ?? "" })),
         stats: hydrated.stats.map((item: any) => ({ label: item.label, value: item.value })),
         highlights: hydrated.highlights.map((item: any) => item.value),
         financialItems: hydrated.financialItems.map((item: any) => item.value),
+        ribbons: hydrated.ribbons.map((item: any) => ({ label: item.label, color: item.color ?? "" })),
       };
     } catch {
       return null;
@@ -698,6 +729,7 @@ export const pocketbaseRepository = {
       published: input.published,
       name: input.name,
       tagline: asNullable(input.tagline),
+      flagshipBadgeLabel: asNullable(input.flagshipBadgeLabel),
       heroImageUrl: asNullable(input.heroImageUrl),
       imageUrl: asNullable(input.imageUrl),
       seoTitle: asNullable(input.seoTitle),
@@ -738,12 +770,14 @@ export const pocketbaseRepository = {
       sortOrder: input.sortOrder,
       published: input.published,
       type: asNullable(input.type),
+      flagshipBadgeLabel: asNullable(input.flagshipBadgeLabel),
       title: input.title,
       subTitle: asNullable(input.subTitle),
       description: asNullable(input.description),
       brochureUrl: asNullable(input.brochureUrl),
       revenueModelUrl: asNullable(input.revenueModelUrl),
       moreInfoUrl: asNullable(input.moreInfoUrl),
+      eoiUrl: asNullable(input.eoiUrl),
       videoUrl: asNullable(input.videoUrl),
       heroVideoUrl: asNullable(input.heroVideoUrl),
     };
@@ -867,5 +901,31 @@ export const pocketbaseRepository = {
       id: asset.id,
       publicUrl: asset.publicUrl,
     }));
+  },
+
+  async listActivityLogs({ page = 1, perPage = 50 }: { page?: number; perPage?: number } = {}) {
+    const pb = await getWriteClient();
+    const result = await pb.collection("admin_activity_logs").getList(page, perPage, {
+      sort: "-created",
+      requestKey: null,
+    });
+
+    return {
+      items: result.items.map((item) => ({
+        id: item.id,
+        created: item.created,
+        adminId: item.adminId,
+        adminEmail: item.adminEmail,
+        adminName: item.adminName,
+        action: item.action,
+        entityType: item.entityType,
+        entityId: item.entityId,
+        entityLabel: item.entityLabel,
+        details: item.details,
+      })),
+      totalItems: result.totalItems,
+      totalPages: result.totalPages,
+      page: result.page,
+    };
   },
 };

@@ -107,6 +107,9 @@ export default async function SectorsPage() {
                             alt={`${sector.name} sector`}
                           />
                           <div className="sector-overlay" />
+                          {sector.flagshipBadgeLabel ? (
+                            <span className="sector-badge">{sector.flagshipBadgeLabel}</span>
+                          ) : null}
                           <div className="sector-title-wrap">
                             <h3 className="sector-title">{sector.name}</h3>
                           </div>

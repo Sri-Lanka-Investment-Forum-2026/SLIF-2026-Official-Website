@@ -604,18 +604,34 @@
   object-fit: contain;
 }
 
-.slif-project-badge {
+.slif-project-badges {
   position: absolute;
   top: 18px;
   left: 18px;
   z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: calc(100% - 36px);
+}
+
+.slif-project-badge {
+  display: inline-flex;
+  align-items: center;
   padding: 0.45rem 0.85rem;
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: rgba(9, 43, 94, 0.92);
   color: #fff;
   border-radius: 999px;
+}
+
+.slif-project-badge-primary {
+  background: rgba(9, 43, 94, 0.92);
+}
+
+.slif-project-badge-status {
+  background: rgba(192, 87, 0, 0.94);
 }
 
 .slif-project-body {
@@ -1839,9 +1855,13 @@
     min-height: 200px;
   }
 
-  .slif-project-badge {
+  .slif-project-badges {
     top: 12px;
     left: 12px;
+    max-width: calc(100% - 24px);
+  }
+
+  .slif-project-badge {
     font-size: 0.72rem;
   }
 

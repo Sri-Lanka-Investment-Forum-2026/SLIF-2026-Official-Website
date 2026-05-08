@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 
-import "./globals.css";
-
 export const metadata: Metadata = {
   title: "SLIF 2026",
   description: "Sri Lanka Investment Forum 2026",
@@ -33,6 +31,8 @@ export default function RootLayout({
         <link rel="stylesheet" href="/assets/vendor/glightbox/css/glightbox.min.css" />
         <link rel="stylesheet" href="/assets/css/main.css" />
         <link rel="stylesheet" href="/assets/css/sector-system.css" />
+        <link rel="stylesheet" href="/assets/css/ribbon.css" />
+        <link rel="stylesheet" href="/assets/css/admin.css" />
       </head>
       <body>{children}</body>
     </html>
